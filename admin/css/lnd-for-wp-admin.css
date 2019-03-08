@@ -66,6 +66,10 @@
 	text-transform: capitalize;
 }
 
+.lnd-wp-status a {
+	color: #7b57de;
+}
+
  .lnd-wp-links {
 	 clear: both;
 	 width: 100%;
@@ -85,10 +89,6 @@
 	 -webkit-border-radius: 5px;
 	 font-size: 14px;
  }
-
-.lnd-wp-status a {
-	color: #7b57de;
-}
 
  .lnd-wp-links a:hover {
 	 color: #fff;
