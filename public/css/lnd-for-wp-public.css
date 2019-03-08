@@ -1,0 +1,61 @@
+
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+.invoice-field, .funded-field {
+	display: inline-block;
+	display:none;
+}
+.payment-spinner {
+	display: inline-block;
+	float: none;
+	width: 42px;
+	height: 42px;
+	background-image: url('../img/ajax-loader.gif');
+	margin: 5px 0px -15px 5px;
+	padding: 0px;
+}
+.invoice-qr {
+	display:block;
+	margin-top: 10px;
+	border: 25px solid #fff;
+}
+.lnd-wp-invoice-qr {
+	margin-bottom: 20px;
+	display: block;
+}
+.wallet-link {
+	padding: 10px;
+}
+.wallet-link, .btn-invoice-request {
+	background-image: linear-gradient(to right, #ed6ea0 0%, #ec8c69 100%);
+	color: #fff;
+	font-weight: bold;
+	border: none;
+	border-radiusL 6px;
+	-webkit-border-radius: 6px;
+	padding: 8px 40px;
+}
+.lnd-for-wp {
+	background-color: #c7cee7;
+	padding: 15px;
+	border-radiusL 6px;
+	-webkit-border-radius: 6px;
+	text-align: center;
+}
+.lnd-for-wp .lightning-invoice {
+	white-space: -moz-pre-wrap; /* Mozilla */
+	white-space: -hp-pre-wrap; /* HP printers */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: pre-wrap; /* CSS 2.1 */
+	white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
+	word-wrap: break-word; /* IE */
+	word-break: break-all;
+	display: inline-block;
+	margin-bottom: 20px;
+}
+.lnd-for-wp fieldset { border: none; }
+.lnd-for-wp .amount-field { display: inline-block; }
