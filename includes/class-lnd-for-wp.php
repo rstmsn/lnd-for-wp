@@ -306,8 +306,8 @@ class LND_For_WP {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'setup_wp_admin_menu' );
-		$this->loader->add_action( 'wp_ajax_lnd_menu_update_default_ajax', $plugin_admin, 'lnd_menu_update_default_ajax' );
 		$this->loader->add_action( 'wp_ajax_lnd_decode_qr_ajax', $plugin_admin, 'lnd_decode_qr_ajax' );
+		$this->loader->add_action( 'wp_ajax_lnd_menu_update_default_ajax', $plugin_admin, 'lnd_menu_update_default_ajax' );
 
 		if( $_REQUEST['page'] == $this->get_plugin_name() ){
 			$this->loader->add_filter( 'admin_footer_text', $plugin_admin, 'admin_footer' );
