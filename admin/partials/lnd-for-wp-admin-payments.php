@@ -65,13 +65,13 @@ $response = $this->handle_pay_lightning_invoice_form();
 							<?php esc_html_e("Pay Lightning Invoice", $this->plugin_name); ?>:
 						</label>
 
-  <div class="fixed">
-		<input type="file" id="lnd-qr-image" />
-		<input id="lnd-read-qr" type="button" class="btn btn-secondary" value="" />
-  </div>
-  <div class="fluid">
-  		<input type="text" class="form-control" name="lightning-invoice" id="lightning-invoice" />
-  </div>
+					  <div class="lnd-wp-fixed">
+							<input type="file" id="lnd-qr-image" />
+							<input id="lnd-read-qr" type="button" class="btn btn-secondary" value="" />
+					  </div>
+					  <div class="lnd-wp-fluid">
+					  		<input type="text" class="form-control" name="lightning-invoice" id="lightning-invoice" />
+					  </div>
 
 						<button type="submit" class="btn btn-secondary">
 							<?php esc_html_e("Pay Invoice", $this->plugin_name); ?>

@@ -544,11 +544,11 @@ a.lnd-wallet-transactions {
 	width: 99%;
 }
 
-.fixed {
+.lnd-wp-fixed {
     float:right;
     width:40px;
 }
-.fluid {
+.lnd-wp-fluid {
     overflow:hidden;
 }
 
