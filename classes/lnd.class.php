@@ -78,12 +78,12 @@ class lnd {
 	/*
 	 * Path to save curl request logs to
 	 */
-	private $curl_log_file = "/logs/curl.log";
+	private $curl_log_file = "curl.log";
 
 	/*
 	 * Path to Root Certificate
 	 */
-	private $cacert = "/cert/cacert.pem";
+	private $cacert = "cacert.pem";
 
 
 	public function __construct($lnd_host = ''){
