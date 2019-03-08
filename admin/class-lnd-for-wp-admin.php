@@ -56,7 +56,7 @@ class LND_For_WP_Admin {
 	 */
 	public function setup_wp_admin_menu() {
 
-		$icon = '../wp-content/plugins/'. $this->plugin_name . '/admin/img/lightning.png';
+		$icon = plugins_url( 'img/lightning.png', __FILE__ );
 
 		add_menu_page( "LND For WP", 'LND For WP', 'manage_options', 'lnd-for-wp', array( $this , 'admin_index') ,$icon);
 
