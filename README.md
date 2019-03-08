@@ -1,5 +1,5 @@
 # lnd-for-wp - alpha 0.1.0
-## A WordPress Plugin for managing &amp; using your LND node.
+## A WordPress plugin for managing &amp; using your LND node.
 
 ### Description 
 LND For WP is a WordPress plugin that allows you to manage and use your LND node, right from your WordPress administration panel. It provides a fully functional wallet interface, allowing you to send and recieve funds across the Bitcoin Lightning Network with ease. The user interface is fully responsive and will adapt to fit any web enabled desktop, tablet or mobile devices. 
