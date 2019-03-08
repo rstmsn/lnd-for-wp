@@ -31,15 +31,13 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /**
- * Currently plugin version.
+ * Current plugin version.
  * Start at version 0.1.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
  */
 define( 'LND_FOR_WP_VERSION', '0.1.0' );
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-plugin-name-activator.php
  */
 function activate_plugin_name() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-lnd-for-wp-activator.php';
@@ -48,7 +46,6 @@ function activate_plugin_name() {
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-plugin-name-deactivator.php
  */
 function deactivate_plugin_name() {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-lnd-for-wp-deactivator.php';
