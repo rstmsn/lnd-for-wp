@@ -14,40 +14,41 @@
 $transactions = $this->sort_transactions_by_timestamp($this->lnd->get_transactions());
 
 ?>
-			<h2>
-				<a href="admin.php?page=lnd-for-wp">
-					<?php echo $this->lnd->get_node_alias(); ?>
-				</a> &rarr; <?php esc_html_e("Transactions", $this->plugin_name); ?>
-			</h2>
 
-			<div class="lnd-wp-status">
+<h2>
+	<a href="admin.php?page=lnd-for-wp">
+		<?php echo $this->lnd->get_node_alias(); ?>
+	</a> &rarr; <?php esc_html_e("Transactions", $this->plugin_name); ?>
+</h2>
 
-				<?php foreach($transactions as $transaction){ ?>
+<div class="lnd-wp-status">
 
-					<div class="lnd-wp-transaction">
+	<?php foreach($transactions as $transaction){ ?>
 
-						<h4>TXID: <?php echo $transaction->tx_hash; ?></h4>
-						<?php echo esc_html_e($transaction->amount < 0 ? '&uarr; Sent' : '&darr; Received', $this->plugin_name); ?>
-						<?php echo number_format(abs($transaction->amount)); ?> SAT
+		<div class="lnd-wp-transaction">
 
-						<?php if($transaction->amount < 0){
-							echo esc_html_e("for a fee of ", $this->plugin_name);
-							echo number_format($transaction->total_fees);
-						} ?>
+			<h4>TXID: <?php echo $transaction->tx_hash; ?></h4>
+			<?php echo esc_html_e($transaction->amount < 0 ? '&uarr; Sent' : '&darr; Received', $this->plugin_name); ?>
+			<?php echo number_format(abs($transaction->amount)); ?> SAT
 
-						<?php echo esc_html_e("on", $this->plugin_name); ?>
-						<?php echo date("d/m/Y \a\\t H:m A\.", $transaction->time_stamp); ?>
+			<?php if($transaction->amount < 0){
+				echo esc_html_e("for a fee of ", $this->plugin_name);
+				echo number_format($transaction->total_fees);
+			} ?>
 
-						<br />
-						<?php echo esc_html_e("Confirmations: ", $this->plugin_name); ?>
+			<?php echo esc_html_e("on", $this->plugin_name); ?>
+			<?php echo date("d/m/Y \a\\t H:m A\.", $transaction->time_stamp); ?>
 
-						<?php $transaction->num_confirmations > 10 ? $css = 'confirmed' : $css = 'unconfirmed'; ?>
+			<br />
+			<?php echo esc_html_e("Confirmations: ", $this->plugin_name); ?>
 
-						<span class="lnd-tx-<?php echo $css; ?>">
-							<?php echo number_format($transaction->num_confirmations); ?>
-						</span>
-					</div>
+			<?php $transaction->num_confirmations > 10 ? $css = 'confirmed' : $css = 'unconfirmed'; ?>
 
-				<?php } ?>
+			<span class="lnd-tx-<?php echo $css; ?>">
+				<?php echo number_format($transaction->num_confirmations); ?>
+			</span>
+		</div>
 
-			</div>
+	<?php } ?>
+
+</div>

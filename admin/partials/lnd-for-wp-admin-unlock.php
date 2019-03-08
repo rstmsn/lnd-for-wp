@@ -13,52 +13,53 @@
 $this->handle_form_unlock_wallet();
 
 ?>
-			<h2>
-				<a href="admin.php?page=lnd-for-wp">
-					<?php echo $this->lnd->get_node_alias(); ?>
-				</a> &rarr; <?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
-			</h2>
 
-			<div class="lnd-wp-status">
+<h2>
+	<a href="admin.php?page=lnd-for-wp">
+		<?php echo $this->lnd->get_node_alias(); ?>
+	</a> &rarr; <?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
+</h2>
 
-				<?php if(isset($_REQUEST['message'])){ ?>
-					<div class="lnd-wp-alert">
-						<?php esc_html_e($_REQUEST['message'], $this->plugin_name); ?>
-					</div>
-				<?php } ?>
+<div class="lnd-wp-status">
 
-				<p>
-					<?php esc_html_e("Node Status", $this->plugin_name); ?>:
-					<strong><?php echo $this->lnd->get_node_status(); ?></strong>
-				</p>
+	<?php if(isset($_REQUEST['message'])){ ?>
+		<div class="lnd-wp-alert">
+			<?php esc_html_e($_REQUEST['message'], $this->plugin_name); ?>
+		</div>
+	<?php } ?>
 
-				<?php if(!$this->lnd->is_node_reachable()){ ?>
+	<p>
+		<?php esc_html_e("Node Status", $this->plugin_name); ?>:
+		<strong><?php echo $this->lnd->get_node_status(); ?></strong>
+	</p>
 
-					<p>We're unable to communicate with your LND node right now. It may be offline or your wallet may be locked. To try unlocking, enter your wallet password and Press 'Unlock Wallet'.</p>
+	<?php if(!$this->lnd->is_node_reachable()){ ?>
 
-					<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=unlock">
-					<input type="hidden" name="lnd-unlock-wallet" value="Y" />
+		<p>We're unable to communicate with your LND node right now. It may be offline or your wallet may be locked. To try unlocking, enter your wallet password and Press 'Unlock Wallet'.</p>
 
-					  <div class="form-group">
-					    <label for="lnd-wallet-password">
-					    	<?php esc_html_e("Wallet Password", $this->plugin_name); ?>:
-					    </label>
-					    <input type="password" class="form-control" name="lnd-wallet-password" id="lnd-wallet-password" placeholder="Password">
-					  </div>
+		<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=unlock">
+		<input type="hidden" name="lnd-unlock-wallet" value="Y" />
 
-					  <button type="submit" class="btn btn-primary">
-						  <?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
-					  </button>
-					</form>
+		  <div class="form-group">
+		    <label for="lnd-wallet-password">
+		    	<?php esc_html_e("Wallet Password", $this->plugin_name); ?>:
+		    </label>
+		    <input type="password" class="form-control" name="lnd-wallet-password" id="lnd-wallet-password" placeholder="Password">
+		  </div>
 
-				<?php }else{ ?>
+		  <button type="submit" class="btn btn-primary">
+			  <?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
+		  </button>
+		</form>
 
-					<p>
-						<strong>
-							<?php esc_html_e("Wallet is unlocked", $this->plugin_name); ?>.
-						</strong>
-					</p>
+	<?php }else{ ?>
 
-				<?php } ?>
+		<p>
+			<strong>
+				<?php esc_html_e("Wallet is unlocked", $this->plugin_name); ?>.
+			</strong>
+		</p>
 
-			</div>
+	<?php } ?>
+
+</div>

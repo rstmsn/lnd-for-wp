@@ -14,20 +14,21 @@
 $this->handle_form_unlock_wallet();
 
 ?>
-			<h2>
-				<a href="admin.php?page=lnd-for-wp">
-					<?php echo $this->lnd->get_node_alias(); ?>
-				</a> &rarr; <?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
-			</h2>
 
-			<div class="lnd-wp-status">
+<h2>
+	<a href="admin.php?page=lnd-for-wp">
+		<?php echo $this->lnd->get_node_alias(); ?>
+	</a> &rarr; <?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
+</h2>
 
-				<span class="lnd-unreachable"></span>
+<div class="lnd-wp-status">
 
-				<div class="lnd-wp-links">
-					<a href="?page=<?php echo $_REQUEST['page']?>&f=unlock">
-						<?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
-					</a>
-				</div>
+	<span class="lnd-unreachable"></span>
 
-			</div>
+	<div class="lnd-wp-links">
+		<a href="?page=<?php echo $_REQUEST['page']?>&f=unlock">
+			<?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
+		</a>
+	</div>
+
+</div>

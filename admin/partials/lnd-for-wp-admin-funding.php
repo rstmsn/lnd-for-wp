@@ -23,24 +23,23 @@ if(!$on_chain_funding_address || isset($_REQUEST['new'])){
 }
 
 ?>
-			<h2>
-				<a href="admin.php?page=lnd-for-wp">
-					<?php echo $this->lnd->get_node_alias(); ?>
-				</a> &rarr; <?php esc_html_e("Fund Wallet", $this->plugin_name); ?>
-			</h2>
 
-			<div class="lnd-wp-status">
+<h2>
+	<a href="admin.php?page=lnd-for-wp">
+		<?php echo $this->lnd->get_node_alias(); ?>
+	</a> &rarr; <?php esc_html_e("Fund Wallet", $this->plugin_name); ?>
+</h2>
 
-				<p class="lnd-p-center"><?php esc_html_e("On Chain Funding Address:", $this->plugin_name); ?></p>
+<div class="lnd-wp-status">
+	<p class="lnd-p-center"><?php esc_html_e("On Chain Funding Address:", $this->plugin_name); ?></p>
 
-				<?php echo $this->lnd->draw_qr($on_chain_funding_address); ?>
+	<?php echo $this->lnd->draw_qr($on_chain_funding_address); ?>
 
-				<p class="lnd-p-center"><strong><?php echo $on_chain_funding_address; ?></strong></p>
+	<p class="lnd-p-center"><strong><?php echo $on_chain_funding_address; ?></strong></p>
 
-				<form method="post" action="?page=<?php echo $_REQUEST['page']?>&f=funding&new=Y">
-					<button type="submit" class="btn btn-secondary">
-						<?php esc_html_e("Generate New Address", $this->plugin_name); ?>
-					</button>
-				</form>
-
-			</div>
+	<form method="post" action="?page=<?php echo $_REQUEST['page']?>&f=funding&new=Y">
+		<button type="submit" class="btn btn-secondary">
+			<?php esc_html_e("Generate New Address", $this->plugin_name); ?>
+		</button>
+	</form>
+</div>
