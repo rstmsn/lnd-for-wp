@@ -2,8 +2,8 @@
 ## A WordPress Plugin for managing &amp; using your LND node.
 
 ### Description 
-LND For WP is a WordPress plugin that allows you to manage and use your LND node, right from your WordPress administration panel. It provides a fully functional wallet interface, allowing you to send and recieve funds across the Bitcoin Lightning Network with ease. The user interface is fully responsive and will automatically adapt to fit desktop, tablet & mobile devices. 
-The current version of the plugin has basic QR code support. This includes both encoding & decoding.
+LND For WP is a WordPress plugin that allows you to manage and use your LND node, right from your WordPress administration panel. It provides a fully functional wallet interface, allowing you to send and recieve funds across the Bitcoin Lightning Network with ease. The user interface is fully responsive and will adapt to fit any web enabled desktop, tablet or mobile devices. 
+The plugin has basic QR support, enabling both encoding & decoding of QR codes.
 The plugin also offers a number of WordPress 'shortcodes', allowing you to embed LND node functionality in your website pages and posts. Shortcode functionality will be expanded with future versions, as needs & use cases arise.
 
 ![Plugin Preview](/lnd-for-wp-preview.png?raw=true "LND For WP Preview")
