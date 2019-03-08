@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       LND For WordPress
  * Plugin URI:        http://github.com/rstmsn/lnd-for-wp/
- * Description:       Connect to any LND node straight from Wordpress. Generate payment invoices, etc
+ * Description:       Manage and use your LND node.
  * Version:           0.1.0
  * Author:            Ross Thompson
  * Author URI:        http://github.com/rstmsn/
