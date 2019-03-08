@@ -17,3 +17,7 @@ The plugin also offers a number of WordPress 'shortcodes', allowing you to embed
 5. On the next screen, press the 'Activate' button to turn on the plugin.
 
 ### Frequently Asked Questions
+
+### Contributing
+Contributions in the form of issues & pull requests are very welcome. 
+Support the project by dropping a few Satoshis in the tip jar: 3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN
