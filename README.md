@@ -1,4 +1,4 @@
-# lnd-for-wp - alpha 0.1.0
+# LND-For-WP - Alpha 0.1.0
 ## A WordPress plugin for managing &amp; using your LND node.
 
 ### Description 
