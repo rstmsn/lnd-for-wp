@@ -13,7 +13,7 @@
  * @package           lnd-for-wp
  *
  * @wordpress-plugin
- * Plugin Name:       LND For WordPress
+ * Plugin Name:       LND For WP
  * Plugin URI:        http://github.com/rstmsn/lnd-for-wp/
  * Description:       Manage and use your LND node.
  * Version:           0.1.0
