@@ -19,5 +19,5 @@ The plugin also offers a number of WordPress 'shortcodes', allowing you to embed
 ### Frequently Asked Questions
 
 ### Contributing
-Contributions in the form of issues, feedback & pull requests are very welcome. 
+Contributions in the form of issues, feedback & pull requests are very welcome.
 You can support the project by dropping a few Satoshis in the tip jar: [3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN](bitcoin:3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN)
