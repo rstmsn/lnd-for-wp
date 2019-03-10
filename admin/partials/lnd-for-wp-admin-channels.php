@@ -28,14 +28,13 @@ $lnd_closed_channels = $this->lnd->get_node_closed_channels();
 <div class="lnd-wp-status">
 
 	<?php if(isset($_REQUEST['message'])){ ?>
-		<div class="lnd-wp-alert"><?php echo $_REQUEST['message']; ?></div>
+		<div class="lnd-wp-alert"><?php echo sanitize_text_field($_REQUEST['message']); ?></div>
 	<?php } ?>
 
 	<?php
 		if(	!isset($_REQUEST['lnd-open-channel']) &&
 				!isset($_REQUEST['lnd-close-channel'])) { ?>
 		<p>
-
 			<span class="lnd-channels-open">
 				<?php esc_html_e("There are currently ", $this->plugin_name); ?>
 				<strong>
@@ -61,7 +60,6 @@ $lnd_closed_channels = $this->lnd->get_node_closed_channels();
 
 				<?php esc_html_e(" Closed Channels", $this->plugin_name); ?>.
 			</span>
-
 		</p>
 	<?php } ?>
 
@@ -128,7 +126,6 @@ $lnd_closed_channels = $this->lnd->get_node_closed_channels();
 			<?php foreach($lnd_open_channels as $lnd_channel){ ?>
 
 				<div class="lnd-channel-contain">
-
 					<h3 title="<?php echo $lnd_channel->remote_pubkey; ?>">
 						<?php echo $this->lnd->get_peer_alias($lnd_channel->remote_pubkey); ?>
 					</h3>
@@ -162,7 +159,6 @@ $lnd_closed_channels = $this->lnd->get_node_closed_channels();
 						<span class="lnd-channel-capacity-contain">
 							<span class="lnd-channel-capacity" style="width: <?php echo $this->get_channel_capacity_as_percentage($lnd_channel) ?>%;"></span>
 						</span>
-
 					</p>
 
 					<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=channels">
@@ -173,7 +169,6 @@ $lnd_closed_channels = $this->lnd->get_node_closed_channels();
 							  <?php esc_html_e("Close Channel", $this->plugin_name); ?>
 						  </button>
 					</form>
-
 				</div>
 
 			<? } ?>

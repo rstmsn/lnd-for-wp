@@ -25,7 +25,7 @@ $dc_peer_confirm = $this->handle_disconnect_peer_form();
 <div class="lnd-wp-status">
 
 	<?php if(isset($_REQUEST['message'])){ ?>
-		<div class="lnd-wp-alert"><?php echo $_REQUEST['message']; ?></div>
+		<div class="lnd-wp-alert"><?php echo sanitize_text_field($_REQUEST['message']); ?></div>
 	<?php } ?>
 
 	<?php

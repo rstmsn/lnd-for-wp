@@ -37,7 +37,7 @@ if(!$on_chain_funding_address || isset($_REQUEST['new'])){
 
 	<p class="lnd-p-center"><strong><?php echo $on_chain_funding_address; ?></strong></p>
 
-	<form method="post" action="?page=<?php echo $_REQUEST['page']?>&f=funding&new=Y">
+	<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=funding&new=Y">
 		<button type="submit" class="btn btn-secondary">
 			<?php esc_html_e("Generate New Address", $this->plugin_name); ?>
 		</button>

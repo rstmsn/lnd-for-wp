@@ -22,7 +22,7 @@ $payment_request = $this->handle_payment_request_form_submit();
 <div class="lnd-wp-status">
 
 	<?php if(isset($_REQUEST['message'])){ ?>
-		<div class="lnd-wp-alert"><?php echo $_REQUEST['message']; ?></div>
+		<div class="lnd-wp-alert"><?php echo sanitize_text_field($_REQUEST['message']); ?></div>
 	<?php } ?>
 
 	<?php if($payment_request){ ?>
@@ -47,7 +47,7 @@ $payment_request = $this->handle_payment_request_form_submit();
 
 	<?php } else { ?>
 
-		<form method="post" action="?page=<?php echo $_REQUEST['page']?>&f=request">
+		<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=request">
 
 			<input type="hidden" name="lnd-request-submit" value="Y" />
 

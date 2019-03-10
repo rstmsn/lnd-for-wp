@@ -37,7 +37,7 @@ $settings = $this->load_default_settings();
 
 	<?php if(isset($_REQUEST['core_message'])){ ?>
 		<div class="lnd-wp-alert">
-			<?php esc_html_e($_REQUEST['core_message'], $this->plugin_name); ?>
+			<?php esc_html_e(sanitize_text_field($_REQUEST['core_message']), $this->plugin_name); ?>
 		</div>
 	<?php } ?>
 
@@ -140,24 +140,24 @@ $settings = $this->load_default_settings();
 				<?php if($this->lnd->is_node_reachable()){ ?>
 
 					<div class="lnd-wp-links">
-						<a href="?page=<?php echo $_REQUEST['page']?>&f=payments">
+						<a href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=payments">
 							<?php esc_html_e("Pay", $this->plugin_name); ?>
 						</a>
-						<a href="?page=<?php echo $_REQUEST['page']?>&f=request">
+						<a href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=request">
 							<?php esc_html_e("Request", $this->plugin_name); ?>
 						</a>
 
 						<div class="lnd-wp-links-more">
-							<a href="?page=<?php echo $_REQUEST['page']?>&f=channels">
+							<a href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=channels">
 								<?php esc_html_e("Channels", $this->plugin_name); ?>
 							</a>
-							<a href="?page=<?php echo $_REQUEST['page']?>&f=peers">
+							<a href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=peers">
 								<?php esc_html_e("Peers", $this->plugin_name); ?>
 							</a>
-							<a href="?page=<?php echo $_REQUEST['page']?>&f=network">
+							<a href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=network">
 								<?php esc_html_e("Network", $this->plugin_name); ?>
 							</a>
-							<a href="?page=<?php echo $_REQUEST['page']?>&f=shortcodes">
+							<a href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=shortcodes">
 								<?php esc_html_e("Shortcodes", $this->plugin_name); ?>
 							</a>
 						</div>

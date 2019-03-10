@@ -63,7 +63,7 @@ $lnd_node_results = $this->handle_search_graph_for_node();
 	</span>
 
 	<p>
-		<form method="post" action="?page=<?php echo $_REQUEST['page']?>&f=network">
+		<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=network">
 			<input type="hidden" name="lnd-search-nodes" value="Y" />
 
 			<div class="form-group">
