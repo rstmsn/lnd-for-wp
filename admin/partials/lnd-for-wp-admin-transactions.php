@@ -26,7 +26,6 @@ $transactions = $this->sort_transactions_by_timestamp($this->lnd->get_transactio
 	<?php foreach($transactions as $transaction){ ?>
 
 		<div class="lnd-wp-transaction">
-
 			<h4>TXID: <?php echo $transaction->tx_hash; ?></h4>
 			<?php echo esc_html_e($transaction->amount < 0 ? '&uarr; Sent' : '&darr; Received', $this->plugin_name); ?>
 			<?php echo number_format(abs($transaction->amount)); ?> SAT

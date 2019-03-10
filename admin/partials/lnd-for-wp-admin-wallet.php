@@ -26,7 +26,7 @@ $lnd_hostname = get_option( 'lnd-hostname', 'Undefined' );
 
 	<?php if($this->lnd->is_node_reachable()){ ?>
 
-		<a href="?page=<?php echo $_REQUEST['page']?>&f=funding">
+		<a href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=funding">
 			<span class="lnd-wallet-funding"></span>
 			<?php esc_html_e("Fund Wallet", $this->plugin_name); ?>
 		</a>
@@ -43,7 +43,7 @@ $lnd_hostname = get_option( 'lnd-hostname', 'Undefined' );
 			<span class="lnd-balance-amount"><?php echo number_format($this->lnd->get_confirmed_balance()); ?></span><span class="lnd-chain-currency lnd-balance-currency">SAT</span>
 		</span>
 
-		<a class="lnd-wallet-transactions" href="?page=<?php echo $_REQUEST['page']?>&f=transactions">
+		<a class="lnd-wallet-transactions" href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=transactions">
 			<?php esc_html_e("Transactions", $this->plugin_name); ?>
 		</a>
 

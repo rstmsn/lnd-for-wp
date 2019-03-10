@@ -24,7 +24,7 @@ $this->handle_form_unlock_wallet();
 
 	<?php if(isset($_REQUEST['message'])){ ?>
 		<div class="lnd-wp-alert">
-			<?php esc_html_e($_REQUEST['message'], $this->plugin_name); ?>
+			<?php esc_html_e(sanitize_text_field($_REQUEST['message']), $this->plugin_name); ?>
 		</div>
 	<?php } ?>
 
