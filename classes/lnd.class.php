@@ -151,7 +151,7 @@ class lnd {
 
 		$curl_handle = curl_init();
 
-		if($this->log_curl_requests){
+		if($this->log_curl_requests && is_writeable($this->curl_log_file)){
 			$log_fh = fopen($this->curl_log_file, 'w');
 			curl_setopt($curl_handle, CURLOPT_VERBOSE, 1);
 			curl_setopt($curl_handle, CURLOPT_STDERR, $log_fh);

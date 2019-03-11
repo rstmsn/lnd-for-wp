@@ -48,7 +48,7 @@ $settings = $this->load_default_settings();
 			<input type="hidden" name="lnd-mute-ssl-warning" value="Y" />
 				<p>
 
-					<?php esc_html_e("No HTTPS / SSL detected. Your connection to Wordpress may be insecure...", $this->plugin_name); ?>
+					<?php esc_html_e("No HTTPS / SSL detected. Your connection to WordPress may be insecure...", $this->plugin_name); ?>
 
 					<button type="submit" class="btn btn-primary">
 						<?php esc_html_e("Remind me Later", $this->plugin_name); ?>
