@@ -33,11 +33,10 @@ $( window ).load(function() {
 
 			$("#lightning-invoice").val('Decoding QR code...');
 
-			// dispatch ajax request to save menu state
-		    var data = {
-	   	        'action': 'lnd_decode_qr_ajax',
-		        'qr_payload': reader.result
-		    };
+			var data = {
+				'action': 'lnd_decode_qr_ajax',
+				'qr_payload': reader.result
+			};
 
 			$.post(ajax_object.ajax_url, data, function(response) {
 
