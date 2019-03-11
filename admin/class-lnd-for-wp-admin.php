@@ -237,7 +237,11 @@ class LND_For_WP_Admin {
 
 		}else if($this->lnd->is_node_reachable()){
 
-			$lnd_wp_page_function = sanitize_text_field( $_REQUEST['f'] );
+			if(isset($_REQUEST['f'])){
+				$lnd_wp_page_function = sanitize_text_field( $_REQUEST['f'] );
+			}else{
+				$lnd_wp_page_function = 'wallet';
+			}
 
 			switch($lnd_wp_page_function){
 				case 'unlock':
@@ -260,6 +264,9 @@ class LND_For_WP_Admin {
 					break;
 				case 'network':
 					require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-network.php';
+					break;
+				case 'wallet':
+					require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-wallet.php';
 					break;
 				case 'shortcodes':
 					require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-shortcodes.php';

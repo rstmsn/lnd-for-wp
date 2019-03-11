@@ -41,10 +41,10 @@ $transactions = $this->sort_transactions_by_timestamp($this->lnd->get_transactio
 			<br />
 			<?php echo esc_html_e("Confirmations: ", $this->plugin_name); ?>
 
-			<?php $transaction->num_confirmations > 10 ? $css = 'confirmed' : $css = 'unconfirmed'; ?>
+			<?php isset($transaction->num_confirmations) && $transaction->num_confirmations  > 10 ? $css = 'confirmed' : $css = 'unconfirmed'; ?>
 
 			<span class="lnd-tx-<?php echo $css; ?>">
-				<?php echo number_format($transaction->num_confirmations); ?>
+				<?php echo isset($transaction->num_confirmations) ? number_format($transaction->num_confirmations) : 0; ?>
 			</span>
 		</div>
 
