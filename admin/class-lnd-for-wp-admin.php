@@ -60,7 +60,10 @@ class LND_For_WP_Admin {
 
 		add_menu_page( "LND For WP", 'LND For WP', 'manage_options', 'lnd-for-wp', array( $this , 'admin_index') ,$icon);
 
+	}
 
+	public function hook_viewport_meta() {
+	    echo '<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">';
 	}
 
 	/**
@@ -127,7 +130,7 @@ class LND_For_WP_Admin {
 			update_option( 'lnd-hostname', sanitize_text_field($_POST['lnd-hostname']) );
 			update_option( 'lnd-conn-timeout', sanitize_text_field($_POST['lnd-conn-timeout']) );
 
-			if($_POST['lnd-force-ssl'] == "on"){
+			if(isset($_POST['lnd-force-ssl']) && $_POST['lnd-force-ssl'] == "on"){
 				update_option( 'lnd-force-ssl', true );
 			}else{
 				update_option( 'lnd-force-ssl', false );
@@ -308,7 +311,7 @@ class LND_For_WP_Admin {
 			// rpc calls
 			sleep(4);
 
-			if($response->error){
+			if(isset($response->error)){
 				$this->redirect_with_message("unlock", __(ucfirst($response->error), $this->plugin_name) . "...");
 			}else{
 				$this->redirect_with_message("unlock", __("Sent wallet unlock request", $this->plugin_name) . "...");
@@ -372,7 +375,7 @@ class LND_For_WP_Admin {
 
 				$response = $this->lnd->open_channel($satoshi_amount, $node_pub_key);
 
-				if($response->error){
+				if(isset($response->error)){
 					$this->redirect_with_message("channels", __(ucfirst($response->error), $this->plugin_name) );
 				}else{
 					$this->redirect_with_message("channels", __("New channel opened") , $this->plugin_name);
@@ -437,7 +440,7 @@ class LND_For_WP_Admin {
 
 					$response = $this->lnd->connect_peer($peer_pubkey,$peer_host);
 
-					if($response->error){
+					if(isset($response->error)){
 						$this->redirect_with_message("peers", __(ucfirst($response->error), $this->plugin_name) );
 					}else{
 						$this->redirect_with_message("peers", __("Successfully connected to peer", $this->plugin_name) . "..." );
@@ -468,7 +471,7 @@ class LND_For_WP_Admin {
 
 				$response = $this->lnd->disconnect_peer($peer_pubkey);
 
-				if($response->error){
+				if(isset($response->error)){
 					$this->redirect_with_message("peers", __(ucfirst($response->error), $this->plugin_name) );
 				}else{
 					$this->redirect_with_message("peers", __("Successfully disconnected from peer", $this->plugin_name) );
@@ -517,7 +520,7 @@ class LND_For_WP_Admin {
 
 					$response =	$this->lnd->pay_invoice($invoice);
 
-					if($response->payment_error || $response->error){
+					if(isset($response->payment_error) || isset($response->error)){
 						$this->redirect_with_message("payments", __("Payment failed: ", $this->plugin_name) . $response->payment_error);
 					}else{
 						$this->redirect_with_message("payments", __("Payment success", $this->plugin_name));
@@ -565,13 +568,15 @@ class LND_For_WP_Admin {
 
 			foreach($lnd_network_graph->nodes as $node){
 
-				if(strpos(strtolower($node->alias), $search_node) !== false){
-					array_push($results, $node);
-				}else if(strpos(strtolower($node->pub_key), $search_node) !== false){
+				if(isset($node->alias) && strpos(strtolower($node->alias), $search_node) !== false){
 					array_push($results, $node);
 				}
 
-				if($node->addresses){
+				if(isset($node->pub_key) && strpos(strtolower($node->pub_key), $search_node) !== false){
+					array_push($results, $node);
+				}
+
+				if(isset($node->addresses)){
 					$addresses = $node->addresses;
 
 					foreach($addresses as $address){
@@ -636,7 +641,7 @@ class LND_For_WP_Admin {
 	 */
 	public function is_ssl() {
 
-		if (isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == 'on') {
+		if (isset($_SERVER['HTTPS'])) {
 			return true;
 		}else{
 			return false;

@@ -78,12 +78,12 @@ class lnd {
 	/*
 	 * Path to save curl request logs to
 	 */
-	private $curl_log_file = "curl.log";
+	private $curl_log_file = "/logs/curl.log";
 
 	/*
 	 * Path to Root Certificate
 	 */
-	private $cacert = "cacert.pem";
+	private $cacert = "/cert/cacert.pem";
 
 
 	public function __construct($lnd_host = ''){
@@ -248,7 +248,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('getinfo');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$node_status = 'Error: ' . $lnd_info->error;
 			}else{
 				$node_status = 'Online';
@@ -280,7 +280,7 @@ class lnd {
 		try {
 			$lnd_info = $this->request('getinfo');
 
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$this->is_node_reachable = false;
 				return false;
 			}else{
@@ -304,7 +304,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('getinfo');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$node_version = 'Error: ' . $lnd_info->error;
 			}else{
 				$node_version_full = explode(" ", $lnd_info->version);
@@ -429,6 +429,8 @@ class lnd {
 
 		try {
 
+			/*todo*/
+
 			$channel_options = array(	"node_pubkey_string" => $remote_node_pubkey,
 										"local_funding_amount" => $satoshi_amount);
 
@@ -472,14 +474,18 @@ class lnd {
 		try {
 
 			$channels = $this->request('channels/closed');
-			return $channels->channels;
-
+			if(isset($channels->channels)){
+				return $channels->channels;
+			}else{
+				return array(0);
+			}
 
 		} catch(Exception $e){
 			$error = $e->getMessage();
+			return $error;
 		}
 
-		return $error;
+		return false;
 	}
 
 	/**
@@ -585,7 +591,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('getinfo');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$node_alias = 'Error: ' . $lnd_info->error;
 			}else{
 				$node_alias = $lnd_info->alias;
@@ -607,7 +613,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('getinfo');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$node_pubkey = 'Error: ' . $lnd_info->error;
 			}else{
 				$node_pubkey = $lnd_info->identity_pubkey;
@@ -632,7 +638,7 @@ class lnd {
 
 			$node_info = $this->request('graph/node/' . $pubkey);
 
-			if($node_info->error){
+			if(isset($node_info->error)){
 				$node_alias = 'Alias Unavailable';
 			}else{
 				if(!empty($node_info->node->alias)){
@@ -661,7 +667,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('getinfo');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$node_synced = 'Error: ' . $lnd_info->error;
 			}else{
 				$node_synced = $lnd_info->synced_to_chain;
@@ -683,7 +689,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('getinfo');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$blockheight = 'Error: ' . $lnd_info->error;
 			}else{
 				$blockheight = $lnd_info->block_height;
@@ -705,7 +711,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('getinfo');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$node_peers = 'Error: ' . $lnd_info->error;
 			}else{
 				if(!$lnd_info->num_peers){
@@ -730,7 +736,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('getinfo');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$node_chans = 'Error: ' . $lnd_info->error;
 			}else{
 				if(!$lnd_info->num_active_channels){
@@ -756,7 +762,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('balance/channels');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$channel_balance = 'Error: ' . $lnd_info->error;
 			}else{
 				if(!$lnd_info->balance){
@@ -782,7 +788,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('balance/blockchain');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$total_balance = 'Error: ' . $lnd_info->error;
 			}else{
 				if(!$lnd_info->total_balance){
@@ -808,7 +814,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('balance/blockchain');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$unconfirmed_balance = 'Error: ' . $lnd_info->error;
 			}else{
 				if(!$lnd_info->unconfirmed_balance){
@@ -834,7 +840,7 @@ class lnd {
 
 		try {
 			$lnd_info = $this->request('balance/blockchain');
-			if($lnd_info->error){
+			if(isset($lnd_info->error)){
 				$confirmed_balance = 'Error: ' . $lnd_info->error;
 			}else{
 				if(!$lnd_info->confirmed_balance){

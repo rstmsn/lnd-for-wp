@@ -41,7 +41,7 @@ $settings = $this->load_default_settings();
 		</div>
 	<?php } ?>
 
-	<?php if(!$this->is_ssl() && $lnd_ssl_warn == 'true'){ ?>
+	<?php if(!$this->is_ssl() && $settings->lnd_ssl_warn == 'true'){ ?>
 
 		<div class="lnd-wp-alert lnd-wp-alert-critical">
 			<form method="post" action="">

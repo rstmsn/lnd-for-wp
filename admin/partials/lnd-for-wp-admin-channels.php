@@ -38,24 +38,24 @@ $lnd_closed_channels = $this->lnd->get_node_closed_channels();
 			<span class="lnd-channels-open">
 				<?php esc_html_e("There are currently ", $this->plugin_name); ?>
 				<strong>
-					<?php echo $lnd_open_channels ? count($lnd_open_channels) : 0 ; ?>
+					<?php echo isset($lnd_open_channels) ? count($lnd_open_channels) : 0 ; ?>
 				</strong>
 				<?php esc_html_e("Open, ", $this->plugin_name); ?>
 
 				<strong>
-					<?php echo $lnd_pending_channels->pending_open_channels ? count($lnd_pending_channels->pending_open_channels) : 0; ?>
+					<?php echo isset($lnd_pending_channels->pending_open_channels) ? count($lnd_pending_channels->pending_open_channels) : 0; ?>
 				</strong>
 
 				<?php esc_html_e(" Pending Open, ", $this->plugin_name); ?>
 
 				<strong>
-					<?php echo $lnd_pending_channels->pending_closing_channels ? count($lnd_pending_channels->pending_closing_channels) : 0; ?>
+					<?php echo isset($lnd_pending_channels->pending_closing_channels) ? count($lnd_pending_channels->pending_closing_channels) : 0; ?>
 				</strong>
 
 				<?php esc_html_e(" Pending Close, and ", $this->plugin_name); ?>
 
 				<strong>
-					<?php echo $lnd_closed_channels ? count($lnd_pending_channels) : 0; ?>
+					<?php echo isset($lnd_closed_channels) ? count($lnd_closed_channels) : 0; ?>
 				</strong>
 
 				<?php esc_html_e(" Closed Channels", $this->plugin_name); ?>.
@@ -112,7 +112,7 @@ $lnd_closed_channels = $this->lnd->get_node_closed_channels();
 				<p>
 					<?php esc_html_e("Node Public Key", $this->plugin_name); ?>:
 				</p>
-				<input type="text" name="lnd-open-channel-pubkey" class="form-control" placeholder="pubkey" value="<?php echo $remote_pubkey ? $remote_pubkey : ''; ?>" />
+				<input type="text" name="lnd-open-channel-pubkey" class="form-control" placeholder="pubkey" value="<?php echo isset($remote_pubkey) ? $remote_pubkey : ''; ?>" />
 
 				<button type="submit" class="btn btn-secondary">
 					&plus; <?php esc_html_e("Open Channel", $this->plugin_name); ?>

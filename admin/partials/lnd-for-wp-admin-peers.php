@@ -96,8 +96,8 @@ $dc_peer_confirm = $this->handle_disconnect_peer_form();
 							<tr>
 								<td><?php echo $lnd_peer->bytes_sent; ?></td>
 								<td><?php echo $lnd_peer->bytes_recv; ?></td>
-								<td><?php echo $lnd_peer->sat_sent ? $lnd_peer->sat_sent : 0; ?></td>
-								<td><?php echo $lnd_peer->ping_time ? $lnd_peer->ping_time : 0; ?></td>
+								<td><?php echo isset($lnd_peer->sat_sent) ? $lnd_peer->sat_sent : 0; ?></td>
+								<td><?php echo isset($lnd_peer->ping_time) ? $lnd_peer->ping_time : 0; ?></td>
 							</tr>
 						</tbody>
 					</table>

@@ -112,7 +112,7 @@ class LND_For_WP {
 	public function lnd_wp_request_invoice( $attributes ){
 
 		if(is_array($attributes)){
-			if($attributes['ajax'] == "true"){
+			if(isset($attributes['ajax']) && $attributes['ajax'] == "true"){
 
 				ob_start();
 				include(plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/lnd-for-wp-request-invoice-ajax.php');
@@ -309,7 +309,7 @@ class LND_For_WP {
 		$this->loader->add_action( 'wp_ajax_lnd_decode_qr_ajax', $plugin_admin, 'lnd_decode_qr_ajax' );
 		$this->loader->add_action( 'wp_ajax_lnd_menu_update_default_ajax', $plugin_admin, 'lnd_menu_update_default_ajax' );
 
-		if( $_REQUEST['page'] == $this->get_plugin_name() ){
+		if( isset($_REQUEST['page']) && $_REQUEST['page'] == $this->get_plugin_name() ){
 			$this->loader->add_filter( 'admin_footer_text', $plugin_admin, 'admin_footer' );
 		}
 
