@@ -75,26 +75,28 @@ class lnd {
 	private $cacert = "/cert/cacert.pem";
 
 
-	public function __construct($lnd_host = ''){
-		if(!empty($lnd_host)){
-			$this->set_host($lnd_host);
+	public function __construct( $lnd_host = '' ){
+
+		if( !empty( $lnd_host ) ){
+			$this->set_host( $lnd_host );
 		}
+
 	}
 
 	/*
 	 * Formats the lnd host details into an endpoint URL
 	 * This will be the URL to which all our curl requests are sent
 	 */
-	public function set_host($lnd_host){
+	public function set_host( $lnd_host ){
     	// run a basic regex check to ensure the provided host
     	// string is in the format of host:port
     	$regex = "([a-z0-9\-\.]*)\.(([a-z]{2,4})|([0-9]{1,3}\.([0-9]{1,3})\.([0-9]{1,3})))";
 	    $regex .= "(:[0-9]{2,5})?";
 
-	    if(preg_match("~^$regex$~i", $lnd_host)){
+	    if( preg_match( "~^$regex$~i", $lnd_host ) ){
 			$this->lnd_end_point = 'https://' . $lnd_host . '/' . $this->lnd_api_version . '/';
 	    }else{
-			throw new Exception("Invalid host. Use host:port syntax.");
+			throw new Exception( "Invalid host. Use host:port syntax." );
 	    }
 	}
 
@@ -102,28 +104,32 @@ class lnd {
 	 * Set the maximum number of seconds to wait while attempting to connect
 	 * to the remote lnd node
 	 */
-	public function set_connection_timeout($seconds){
-		if(is_numeric($seconds)){
+	public function set_connection_timeout( $seconds ){
+
+		if( is_numeric( $seconds ) ){
 			$this->connection_timeout = $seconds;
 		}
+
 	}
 
 	/*
 	 * Set the file path to the root ca certificate
 	 */
-	public function set_cacert_file($file_path){
-		if(file_exists($file_path)){
+	public function set_cacert_file( $file_path ){
+
+		if( file_exists( $file_path ) ){
 			$this->cacert = $file_path;
 		}else{
 			return false;
 		}
+
 	}
 
 	/*
 	 * construct a new lnd api request using curl and send it to our lnd endpoint.
 	 * decode the JSON response and return an object of stdClass
 	 */
-	public function request($path,$options = '',$delete = false){
+	public function request( $path, $options = '', $delete = false ){
 
 		$request_url = $this->lnd_end_point . $path;
 		$request_method = $options ? 'POST' : 'GET';
@@ -131,8 +137,8 @@ class lnd {
 
 		// include lnd authentication macaroon (hex representation) in our curl request
 		// header and set the request content type to JSON
-		$request_header = array("Grpc-Metadata-macaroon" => $this->macaroon_hex,
-		 						"Content-Type" => "application/json");
+		$request_header = array( "Grpc-Metadata-macaroon" => $this->macaroon_hex,
+		 						 "Content-Type" => "application/json" );
 
 		$request_body = $options ? json_encode( $options ) : '';
 
@@ -165,26 +171,14 @@ class lnd {
 	}
 
 	/*
-	 * Read the lnd authentication .macaroon file from disk
-	 * convert to its (uppercase) hexadecimal representation and store
-	 * for later use (in constructing curl request headers)
-	 */
-	public function load_macaroon_from_file($macaroon_path){
-		if(file_exists($macaroon_path)){
-			$this->macaroon_hex = strtoupper(bin2hex(file_get_contents($macaroon_path)));
-		}else{
-			throw new Exception('Macaroon not found');
-		}
-	}
-
-	/*
 	 * Set the macaroon hex value using raw data
 	 */
-	public function load_macaroon_from_data($macaroon_data){
-		if(!empty($macaroon_data)){
+	public function load_macaroon_from_data( $macaroon_data ){
+
+		if( !empty( $macaroon_data ) ){
 			$this->macaroon_hex = $macaroon_data;
 		}else{
-			throw new Exception('Macaroon data is empty');
+			throw new Exception( 'Macaroon data is empty' );
 		}
 	}
 
@@ -192,13 +186,15 @@ class lnd {
 	 * Check lnd TLS certificate exists on disk and
 	 * store its path for later use (in constructing curl request headers)
 	 */
-	public function load_tls_cert($tls_certificate_path){
-		if(file_exists($tls_certificate_path)){
+	public function load_tls_cert( $tls_certificate_path ){
+
+		if( file_exists( $tls_certificate_path ) ){
 			$this->tls_certificate_path = $tls_certificate_path;
 			$this->use_ssl = true;
 		}else{
-			throw new Exception('TLS Certificate not found');
+			throw new Exception( 'TLS Certificate not found' );
 		}
+
 	}
 
 	/**
@@ -210,19 +206,19 @@ class lnd {
 
 		// if the node is unreachable, block further api calls
 		// to reduce page load times
-		if(!$this->force_disable_cache && isset($this->is_node_reachable) && !$this->is_node_reachable){
+		if( !$this->force_disable_cache && isset( $this->is_node_reachable ) && !$this->is_node_reachable ){
 			return 'Host Unreachable';
 		}
 
 		try {
-			$lnd_info = $this->request('getinfo');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'getinfo' );
+			if( isset( $lnd_info->error ) ){
 				$node_status = 'Error: ' . $lnd_info->error;
 			}else{
 				$node_status = 'Online';
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$node_status = $e->getMessage();
 		}
 
@@ -241,21 +237,21 @@ class lnd {
 
 		// if the node is flagged as unreachable, block further api calls
 		// to reduce page load times
-		if(!$this->force_disable_cache && isset($this->is_node_reachable) && !$this->is_node_reachable){
+		if( !$this->force_disable_cache && isset( $this->is_node_reachable ) && !$this->is_node_reachable ){
 			return false;
 		}
 
 		try {
-			$lnd_info = $this->request('getinfo');
+			$lnd_info = $this->request( 'getinfo' );
 
-			if(isset($lnd_info->error)){
+			if( isset( $lnd_info->error ) ){
 				$this->is_node_reachable = false;
 				return false;
 			}else{
 				return true;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$this->is_node_reachable = false;
 			return false;
 		}
@@ -271,15 +267,15 @@ class lnd {
 	public function get_node_version() {
 
 		try {
-			$lnd_info = $this->request('getinfo');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'getinfo' );
+			if( isset( $lnd_info->error ) ){
 				$node_version = 'Error: ' . $lnd_info->error;
 			}else{
-				$node_version_full = explode(" ", $lnd_info->version);
+				$node_version_full = explode( " ", $lnd_info->version );
 				$node_version = $node_version_full[0];
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$node_version = $e->getMessage();
 		}
 
@@ -292,12 +288,12 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function get_new_invoice($amount,$memo,$return_json = true,$include_qr = false) {
+	public function get_new_invoice( $amount, $memo, $return_json = true, $include_qr = false ) {
 
 		try {
 
-			$invoice_options = array("memo" => $memo, "value" => $amount);
-			$invoice = $this->request('invoices', $invoice_options, false, true);
+			$invoice_options = array( "memo" => $memo, "value" => $amount );
+			$invoice = $this->request( 'invoices', $invoice_options, false, true );
 
 			$return_invoice = new stdClass();
 			$return_invoice->payment_request = $invoice->payment_request;
@@ -305,18 +301,18 @@ class lnd {
 			$return_invoice->amount = $amount;
 			$return_invoice->memo = $memo;
 
-			if($include_qr){
-				$return_invoice->qr = $this->draw_qr($return_invoice->payment_request);
+			if( $include_qr ){
+				$return_invoice->qr = $this->draw_qr( $return_invoice->payment_request );
 			}
 
-			if($return_json){
-				return json_encode($return_invoice);
+			if( $return_json ){
+				return json_encode( $return_invoice );
 			}else{
 				return $return_invoice;
 			}
 
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -328,16 +324,16 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function pay_invoice($invoice) {
+	public function pay_invoice( $invoice ) {
 
 		try {
 
-			$payment_options = array("payment_request" => $invoice);
-			$payment = $this->request('channels/transactions', $payment_options);
+			$payment_options = array( "payment_request" => $invoice );
+			$payment = $this->request( 'channels/transactions', $payment_options );
 
 			return $payment;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -353,12 +349,10 @@ class lnd {
 
 		try {
 
-			#$options = array("reversed" => true);
-			$invoices = $this->request('invoices', $options);
-
+			$invoices = $this->request( 'invoices', $options );
 			return $invoices;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -370,18 +364,18 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function open_channel($satoshi_amount, $remote_node_pubkey) {
+	public function open_channel( $satoshi_amount, $remote_node_pubkey ) {
 
 		try {
 
-			$channel_options = array(	"node_pubkey_string" => $remote_node_pubkey,
-										"local_funding_amount" => $satoshi_amount);
+			$channel_options = array( "node_pubkey_string" => $remote_node_pubkey,
+									  "local_funding_amount" => $satoshi_amount );
 
-			$new_channel = $this->request('channels', $channel_options);
+			$new_channel = $this->request( 'channels', $channel_options );
 
 			return $new_channel;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -393,20 +387,20 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function close_channel($channel_id) {
+	public function close_channel( $channel_id ) {
 
 		try {
 
 			/*todo*/
 
-			$channel_options = array(	"node_pubkey_string" => $remote_node_pubkey,
-										"local_funding_amount" => $satoshi_amount);
+			$channel_options = array( "node_pubkey_string" => $remote_node_pubkey,
+									  "local_funding_amount" => $satoshi_amount);
 
-			$new_channel = $this->request('channels', $channel_options);
+			$new_channel = $this->request( 'channels', $channel_options );
 
 			return $new_channel;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -422,10 +416,10 @@ class lnd {
 
 		try {
 
-			$channels = $this->request('channels');
+			$channels = $this->request( 'channels' );
 			return $channels->channels;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -441,14 +435,14 @@ class lnd {
 
 		try {
 
-			$channels = $this->request('channels/closed');
-			if(isset($channels->channels)){
+			$channels = $this->request( 'channels/closed' );
+			if( isset( $channels->channels ) ){
 				return $channels->channels;
 			}else{
 				return array(0);
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 			return $error;
 		}
@@ -465,11 +459,11 @@ class lnd {
 
 		try {
 
-			$channels = $this->request('channels/pending');
+			$channels = $this->request( 'channels/pending' );
 
 			return $channels;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -482,14 +476,14 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function decode_invoice($invoice){
+	public function decode_invoice( $invoice ){
 
 		try {
 
-			$payment = $this->request('payreq/' . $invoice);
+			$payment = $this->request( 'payreq/' . $invoice );
 			return $payment;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -501,15 +495,15 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function disconnect_peer($peer){
+	public function disconnect_peer( $peer ){
 
 		try {
 
-			$response = $this->request('peers/' . $peer,'',true);
+			$response = $this->request( 'peers/' . $peer, '', true );
 
 			return $response;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -522,20 +516,18 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function connect_peer($pubkey, $host){
+	public function connect_peer( $pubkey, $host ){
 
 		try {
 
-			$lightningAddress['pubkey'] = $pubkey;
-			$lightningAddress['host'] = $host;
-
-			$options = array("addr" => $lightningAddress);
-
-			$response = $this->request('peers',$options);
+			$lightning_address['pubkey'] = $pubkey;
+			$lightning_address['host'] = $host;
+			$options = array( "addr" => $lightning_address );
+			$response = $this->request( 'peers', $options );
 
 			return $response;
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$error = $e->getMessage();
 		}
 
@@ -551,19 +543,19 @@ class lnd {
 	public function get_node_alias() {
 
 		// if the node is flagged as unreachable, block further api calls
-		if(!$this->force_disable_cache && isset($this->is_node_reachable) && !$this->is_node_reachable){
+		if( !$this->force_disable_cache && isset( $this->is_node_reachable ) && !$this->is_node_reachable ){
 			return 'Host Unreachable';
 		}
 
 		try {
-			$lnd_info = $this->request('getinfo');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'getinfo' );
+			if( isset( $lnd_info->error ) ){
 				$node_alias = 'Error: ' . $lnd_info->error;
 			}else{
 				$node_alias = $lnd_info->alias;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$node_alias = $e->getMessage();
 		}
 
@@ -578,14 +570,14 @@ class lnd {
 	public function get_node_pubkey() {
 
 		try {
-			$lnd_info = $this->request('getinfo');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'getinfo' );
+			if( isset( $lnd_info->error ) ){
 				$node_pubkey = 'Error: ' . $lnd_info->error;
 			}else{
 				$node_pubkey = $lnd_info->identity_pubkey;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$node_pubkey = $e->getMessage();
 		}
 
@@ -598,16 +590,16 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function get_peer_alias($pubkey) {
+	public function get_peer_alias( $pubkey ) {
 
 		try {
 
-			$node_info = $this->request('graph/node/' . $pubkey);
+			$node_info = $this->request( 'graph/node/' . $pubkey );
 
-			if(isset($node_info->error)){
+			if( isset( $node_info->error ) ){
 				$node_alias = 'Alias Unavailable';
 			}else{
-				if(!empty($node_info->node->alias)){
+				if( !empty( $node_info->node->alias ) ){
 
 					$node_alias = $node_info->node->alias;
 				}else{
@@ -616,7 +608,7 @@ class lnd {
 
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$node_alias = $e->getMessage();
 		}
 
@@ -632,18 +624,18 @@ class lnd {
 	public function get_node_synced() {
 
 		try {
-			$lnd_info = $this->request('getinfo');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'getinfo' );
+			if( isset( $lnd_info->error ) ){
 				$node_synced = 'Error: ' . $lnd_info->error;
 			}else{
-				if(isset($lnd_info->synced_to_chain)){
+				if( isset( $lnd_info->synced_to_chain ) ){
 					$node_synced = $lnd_info->synced_to_chain;
 				}else{
 					$node_synced = 'Synchronising...';
 				}
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$node_synced = $e->getMessage();
 		}
 
@@ -658,14 +650,14 @@ class lnd {
 	public function get_node_blockheight() {
 
 		try {
-			$lnd_info = $this->request('getinfo');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'getinfo' );
+			if( isset( $lnd_info->error ) ){
 				$blockheight = 'Error: ' . $lnd_info->error;
 			}else{
 				$blockheight = $lnd_info->block_height;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$blockheight = $e->getMessage();
 		}
 
@@ -680,17 +672,17 @@ class lnd {
 	public function get_node_num_peers() {
 
 		try {
-			$lnd_info = $this->request('getinfo');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'getinfo' );
+			if( isset( $lnd_info->error ) ){
 				$node_peers = 'Error: ' . $lnd_info->error;
 			}else{
-				if(!$lnd_info->num_peers){
+				if( !$lnd_info->num_peers ){
 					return 0;
 				}
 				$node_peers = $lnd_info->num_peers;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$node_peers = $e->getMessage();
 		}
 
@@ -705,17 +697,17 @@ class lnd {
 	public function get_node_num_channels() {
 
 		try {
-			$lnd_info = $this->request('getinfo');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'getinfo' );
+			if( isset( $lnd_info->error ) ){
 				$node_chans = 'Error: ' . $lnd_info->error;
 			}else{
-				if(!$lnd_info->num_active_channels){
+				if( !$lnd_info->num_active_channels ){
 					return 0;
 				}
 				$node_chans = $lnd_info->num_active_channels;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$node_chans = $e->getMessage();
 		}
 
@@ -731,17 +723,17 @@ class lnd {
 	public function get_total_channel_balance() {
 
 		try {
-			$lnd_info = $this->request('balance/channels');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'balance/channels' );
+			if( isset( $lnd_info->error ) ){
 				$channel_balance = 'Error: ' . $lnd_info->error;
 			}else{
-				if(!$lnd_info->balance){
+				if( !$lnd_info->balance ){
 					return 0;
 				}
 				$channel_balance = $lnd_info->balance;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$channel_balance = $e->getMessage();
 		}
 
@@ -757,17 +749,17 @@ class lnd {
 	public function get_total_blockchain_balance() {
 
 		try {
-			$lnd_info = $this->request('balance/blockchain');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'balance/blockchain' );
+			if( isset( $lnd_info->error ) ){
 				$total_balance = 'Error: ' . $lnd_info->error;
 			}else{
-				if(!$lnd_info->total_balance){
+				if( !$lnd_info->total_balance ){
 					return 0;
 				}
 				$total_balance = $lnd_info->total_balance;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$total_balance = $e->getMessage();
 		}
 
@@ -783,17 +775,17 @@ class lnd {
 	public function get_unconfirmed_balance() {
 
 		try {
-			$lnd_info = $this->request('balance/blockchain');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'balance/blockchain' );
+			if( isset( $lnd_info->error ) ){
 				$unconfirmed_balance = 'Error: ' . $lnd_info->error;
 			}else{
-				if(!$lnd_info->unconfirmed_balance){
+				if( !$lnd_info->unconfirmed_balance ){
 					return 0;
 				}
 				$unconfirmed_balance = $lnd_info->unconfirmed_balance;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$unconfirmed_balance = $e->getMessage();
 		}
 
@@ -809,17 +801,17 @@ class lnd {
 	public function get_confirmed_balance() {
 
 		try {
-			$lnd_info = $this->request('balance/blockchain');
-			if(isset($lnd_info->error)){
+			$lnd_info = $this->request( 'balance/blockchain' );
+			if( isset( $lnd_info->error ) ){
 				$confirmed_balance = 'Error: ' . $lnd_info->error;
 			}else{
-				if(!$lnd_info->confirmed_balance){
+				if( !$lnd_info->confirmed_balance ){
 					return 0;
 				}
 				$confirmed_balance = $lnd_info->confirmed_balance;
 			}
 
-		} catch(Exception $e){
+		} catch( Exception $e ){
 			$confirmed_balance = $e->getMessage();
 		}
 
@@ -835,10 +827,9 @@ class lnd {
 	public function get_node_chain_address() {
 
 		try {
-
-			$address = $this->request('newaddress?type=1')->address;
+			$address = $this->request( 'newaddress?type=1' )->address;
 			return $address;
-		} catch (Exception $e){
+		} catch ( Exception $e ){
 			return $e->getMessage();
 		}
 	}
@@ -848,20 +839,20 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function invoice_is_paid($payment_hash) {
+	public function invoice_is_paid( $payment_hash ) {
 
-		$r_hash = bin2hex(base64_decode($payment_hash));
+		$r_hash = bin2hex( base64_decode( $payment_hash ) );
 
 		try {
-			$invoice = $this->request('invoice/' . $r_hash);
+			$invoice = $this->request( 'invoice/' . $r_hash );
 
-			if($invoice->settled){
+			if( $invoice->settled ){
 				return true;
 			}else{
 				return false;
 			}
 
-		} catch (Exception $e){
+		} catch ( Exception $e ){
 			return false;
 		}
 	}
@@ -871,14 +862,13 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function unlock_wallet($wallet_password) {
+	public function unlock_wallet( $wallet_password ) {
 
-		$unlock_options = array("wallet_password" => $wallet_password);
+		$unlock_options = array( "wallet_password" => $wallet_password );
 		try {
-			$response = $this->request('unlockwallet',$unlock_options);
-
+			$response = $this->request( 'unlockwallet', $unlock_options );
 			return $response;
-		} catch (Exception $e){
+		} catch ( Exception $e ){
 			return $e->getMessage();
 		}
 	}
@@ -890,9 +880,9 @@ class lnd {
 	 */
 	public function get_node_peers() {
 		try {
-			$peers = $this->request('peers')->peers;
+			$peers = $this->request( 'peers' )->peers;
 			return $peers;
-		} catch (Exception $e){
+		} catch ( Exception $e ){
 			return $e->getMessage();
 		}
 	}
@@ -904,10 +894,10 @@ class lnd {
 	 */
 	public function get_network_details() {
 		try {
-			$graph = $this->request('graph/info');
+			$graph = $this->request( 'graph/info' );
 
 			return $graph;
-		} catch (Exception $e){
+		} catch ( Exception $e ){
 			return $e->getMessage();
 		}
 	}
@@ -921,10 +911,9 @@ class lnd {
 	 */
 	public function get_network_graph() {
 		try {
-			$graph = $this->request('graph');
-
+			$graph = $this->request( 'graph' );
 			return $graph;
-		} catch (Exception $e){
+		} catch ( Exception $e ){
 			return $e->getMessage();
 		}
 	}
@@ -936,29 +925,29 @@ class lnd {
 	 */
 	public function get_transactions() {
 		try {
-			$transactions = $this->request('transactions')->transactions;
+			$transactions = $this->request( 'transactions' )->transactions;
 
-			if(is_array($transactions)){
-				$transactions = array_reverse($transactions);
+			if( is_array( $transactions ) ){
+				$transactions = array_reverse( $transactions );
 			}
 
 			return $transactions;
-		} catch (Exception $e){
+		} catch ( Exception $e ){
 			return $e->getMessage();
 		}
 	}
 
 	/**
-	 * Returns QR image data encoded as base64
+	 * Returns QR image with src data encoded as base64
 	 *
 	 * @since    0.1.0
 	 */
-	public function draw_qr($data_string) {
+	public function draw_qr( $data_string ) {
 		$qr_image_path = plugin_dir_path( __FILE__ ) . '../admin/img/qr/qr.png';
 		$qr = new QRcode();
-		$qr->png($data_string, $qr_image_path, 'L', 5, 2);
-		$image_data = base64_encode(file_get_contents($qr_image_path));
-		$img = '<img src="data:image/gif;base64,'.$image_data.'" />';
+		$qr->png( $data_string, $qr_image_path, 'L', 5, 2);
+		$image_data = base64_encode( file_get_contents($qr_image_path) );
+		$img = '<img src="data:image/gif;base64,'. $image_data .'" />';
 
 		return $img;
 	}
