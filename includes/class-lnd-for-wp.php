@@ -87,11 +87,11 @@ class LND_For_WP {
 	 */
 	public function lnd_wp_shortcode( $attributes ){
 
-		if(is_array($attributes)){
+		if( is_array( $attributes ) ){
 
 			$shortcode_action = $attributes[0];
 
-			switch($shortcode_action){
+			switch( $shortcode_action ){
 				case 'on_chain_address':
 					return $this->lnd_wp_onchain_address( $attributes );
 					break;
@@ -111,8 +111,8 @@ class LND_For_WP {
 
 	public function lnd_wp_request_invoice( $attributes ){
 
-		if(is_array($attributes)){
-			if(isset($attributes['ajax']) && $attributes['ajax'] == "true"){
+		if( is_array( $attributes ) ){
+			if( isset( $attributes['ajax'] ) && $attributes['ajax'] == "true" ){
 
 				ob_start();
 				include(plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/lnd-for-wp-request-invoice-ajax.php');
@@ -125,8 +125,8 @@ class LND_For_WP {
 				$invoice_amount = $attributes['amount'];
 				$invoice_memo 	= $attributes['memo'];
 
-				$payment_request = $this->lnd->get_new_invoice($invoice_amount,$invoice_memo);
-				$json_data = json_decode($payment_request);
+				$payment_request = $this->lnd->get_new_invoice( $invoice_amount, $invoice_memo );
+				$json_data = json_decode( $payment_request );
 
 				return $json_data->payment_request;
 			}
@@ -147,25 +147,25 @@ class LND_For_WP {
 	 */
 	public function lnd_wp_onchain_address( $attributes ){
 
-		if(is_array($attributes)){
+		if( is_array( $attributes ) ){
 
 			// if generate_new parameter is not set, force new address generation
 			// as default behaviour.
 
-			if(empty($attributes['generate_new'])){
+			if( empty( $attributes['generate_new'] ) ){
 				$generate_new = "true";
 			}else{
 				$generate_new = $attributes['generate_new'];
 			}
 
 
-			if($generate_new === "true"){
+			if( $generate_new === "true" ){
 				$on_chain_address = $this->lnd->get_node_chain_address();
 			}else{
 
 				$saved_chain_address = get_option( 'lnd-on-chain-address' );
 
-				if(!empty($saved_chain_address)){
+				if( !empty( $saved_chain_address ) ){
 					$on_chain_address = $saved_chain_address;
 				}else{
 					$on_chain_address = $this->lnd->get_node_chain_address();
@@ -255,21 +255,21 @@ class LND_For_WP {
 		$lnd_conn_timeout = get_option( 'lnd-conn-timeout' );
 		$lnd_force_ssl = get_option( 'lnd-force-ssl', false );
 
-		if($lnd_force_ssl){
+		if( $lnd_force_ssl ){
 			$lnd_tls_cert_name = get_option( 'lnd-tls-cert-name' );
 		}
 
 		try {
-			$this->lnd->set_connection_timeout($lnd_conn_timeout);
-			$this->lnd->set_host($lnd_hostname);
-			$this->lnd->load_macaroon_from_data($lnd_macaroon);
+			$this->lnd->set_connection_timeout( $lnd_conn_timeout );
+			$this->lnd->set_host( $lnd_hostname );
+			$this->lnd->load_macaroon_from_data( $lnd_macaroon );
 
-			if($lnd_force_ssl){
-				$this->lnd->load_tls_cert(plugin_dir_path( dirname( __FILE__ ) ) . 'admin/cert/' . $lnd_tls_cert_name);
-				$this->lnd->set_cacert_file(plugin_dir_path( dirname( __FILE__ ) ) . 'admin/cert/cacert.pem');
+			if( $lnd_force_ssl ){
+				$this->lnd->load_tls_cert( plugin_dir_path( dirname( __FILE__ ) ) . 'admin/cert/' . $lnd_tls_cert_name );
+				$this->lnd->set_cacert_file( plugin_dir_path( dirname( __FILE__ ) ) . 'admin/cert/cacert.pem' );
 			}
 
-		}catch (Exception $e){
+		}catch ( Exception $e ){
 
 		}
 	}
@@ -308,7 +308,7 @@ class LND_For_WP {
 		$this->loader->add_action( 'wp_ajax_lnd_decode_qr_ajax', $plugin_admin, 'lnd_decode_qr_ajax' );
 		$this->loader->add_action( 'wp_ajax_lnd_menu_update_default_ajax', $plugin_admin, 'lnd_menu_update_default_ajax' );
 
-		if( isset($_REQUEST['page']) && $_REQUEST['page'] == $this->get_plugin_name() ){
+		if( isset( $_REQUEST['page'] ) && $_REQUEST['page'] == $this->get_plugin_name() ){
 			$this->loader->add_filter( 'admin_footer_text', $plugin_admin, 'admin_footer' );
 		}
 

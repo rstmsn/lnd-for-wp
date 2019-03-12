@@ -97,7 +97,6 @@ class LND_for_WP_Public {
 		){
 			$invoice_amount = sanitize_text_field( $_REQUEST['amount'] );
 			$invoice_memo = sanitize_text_field( $_REQUEST['memo'] );
-
 			echo $this->lnd->get_new_invoice( $invoice_amount, $invoice_memo, true, true );
 			wp_die();
 		}
@@ -111,7 +110,7 @@ class LND_for_WP_Public {
 		){
 			$payment_hash = sanitize_text_field($_REQUEST['payment_hash']);
 
-			if($this->lnd->invoice_is_paid($payment_hash)){
+			if( $this->lnd->invoice_is_paid( $payment_hash ) ){
 				echo "true";
 			}else{
 				echo "false";

@@ -25,14 +25,14 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 function lnd_for_wp_uninstall(){
-	delete_option('lnd-hostname');
-	delete_option('lnd-macaroon');
-	delete_option('lnd-macaroon-name');
-	delete_option('lnd-ssl-warn');
-	delete_option('lnd-conn-timeout');
-	delete_option('lnd-hide-config');
-	delete_option('lnd-tls-cert-name');
-	delete_option('lnd-force-ssl');
+	delete_option( 'lnd-hostname' );
+	delete_option( 'lnd-macaroon' );
+	delete_option( 'lnd-macaroon-name' );
+	delete_option( 'lnd-ssl-warn' );
+	delete_option( 'lnd-conn-timeout' );
+	delete_option( 'lnd-hide-config' );
+	delete_option( 'lnd-tls-cert-name' );
+	delete_option( 'lnd-force-ssl' );
 }
 
 lnd_for_wp_uninstall();

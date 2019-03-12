@@ -431,7 +431,7 @@ class LND_For_WP_Admin {
 				$fail_sanity_check = true;
 			}
 
-			if( $fail_sanity_check ){
+			if( isset( $fail_sanity_check ) && $fail_sanity_check == true ){
 				$this->redirect_with_message( "channels", __( "Invalid Satoshi amount or public key", $this->plugin_name ) );
 			}else{
 
@@ -442,7 +442,7 @@ class LND_For_WP_Admin {
 				if(isset( $response->error )){
 					$this->redirect_with_message( "channels", __( ucfirst( $response->error ), $this->plugin_name ) );
 				}else{
-					$this->redirect_with_message( "channels", __( "New channel opened" ) , $this->plugin_name );
+					$this->redirect_with_message( "channels", __( "New channel requested", $this->plugin_name ) );
 				}
 			}
 		}
