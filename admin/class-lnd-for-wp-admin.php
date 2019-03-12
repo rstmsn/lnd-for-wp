@@ -146,6 +146,8 @@ class LND_For_WP_Admin {
 		if(
 			isset( $_REQUEST['lnd-update-settings'] ) &&
 			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			isset( $_REQUEST['lnd-conn-timeout'] ) &&
+			is_numeric( $_REQUEST['lnd-conn-timeout'] ) &&
 			wp_verify_nonce( $_REQUEST['lnd-post-nonce'], 'lnd_update_node_settings' ) &&
 			$_REQUEST['lnd-update-settings'] == "Y"
 		){
@@ -159,7 +161,10 @@ class LND_For_WP_Admin {
 				update_option( 'lnd-force-ssl', false );
 			}
 
-			if(!empty( $_FILES )){
+			if(
+				!empty( $_FILES ) &&
+				current_user_can( 'upload_files' )
+			){
 
 				/* process macaroon file upload */
 				if( $_FILES['lnd-attach-macaroon']['error'] != UPLOAD_ERR_NO_FILE ){
@@ -173,15 +178,18 @@ class LND_For_WP_Admin {
 					}
 
 					// check if the upload file is of the correct type
-					if( $_FILES['lnd-attach-macaroon']['type'] != 'application/octet-stream' ){
-						$this->redirect_with_message( "", $macaroon_file_name . __( " is of an invalid file type", $this->plugin_name ) . "...", true );
+					$allowed_mimes = array( 'macaroon' => 'application/octet-stream' );
+					$file_info = wp_check_filetype( basename( $_FILES['lnd-attach-macaroon']['name'] ) , $allowed_mimes );
+
+					if ( !empty( $file_info['type'] ) ) {
+						$macaroon_data = file_get_contents( $_FILES["lnd-attach-macaroon"]["tmp_name"] );
+						$macaroon_hex = strtoupper( bin2hex( $macaroon_data ) );
+						update_option( 'lnd-macaroon-name', $macaroon_file_name );
+						update_option( 'lnd-macaroon', $macaroon_hex );
+					}else{
+						$this->redirect_with_message( "", $macaroon_file_name . __( " has an invalid file type", $this->plugin_name ) . "...", true );
 						return;
 					}
-
-					$macaroon_data = file_get_contents( $_FILES["lnd-attach-macaroon"]["tmp_name"] );
-					$macaroon_hex = strtoupper( bin2hex( $macaroon_data ) );
-					update_option( 'lnd-macaroon-name', $macaroon_file_name );
-					update_option( 'lnd-macaroon', $macaroon_hex );
 				}
 
 				/* process tls certificate file upload */
@@ -196,14 +204,18 @@ class LND_For_WP_Admin {
 					}
 
 					// check if the upload file is of the correct type
-					if( $_FILES['lnd-attach-tls-cert']['type'] != 'application/octet-stream' ){
-						$this->redirect_with_message( "", $tls_file_name . __( " is of an invalid file type", $this->plugin_name, true) . "..." );
+					$allowed_mimes = array( 'cert' => 'application/octet-stream' );
+					$file_info = wp_check_filetype( basename( $_FILES['lnd-attach-tls-cert']['name'] ) , $allowed_mimes );
+
+
+					if ( !empty( $file_info['type'] ) ) {
+						$tls_cert_path = plugin_dir_path( __FILE__ ) . 'cert/' . $tls_file_name;
+						move_uploaded_file( $_FILES["lnd-attach-tls-cert"]["tmp_name"] , $tls_cert_path );
+						update_option( 'lnd-tls-cert-name', $tls_file_name );
+					}else {
+						$this->redirect_with_message( "", $tls_file_name . __( " has an invalid file type", $this->plugin_name ) . "...", true );
 						return;
 					}
-
-					$tls_cert_path = plugin_dir_path( __FILE__ ) . 'cert/' . $tls_file_name;
-					move_uploaded_file( $_FILES["lnd-attach-tls-cert"]["tmp_name"] , $tls_cert_path );
-					update_option( 'lnd-tls-cert-name', $tls_file_name );
 
 				}
 			}
