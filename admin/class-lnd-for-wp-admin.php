@@ -62,10 +62,6 @@ class LND_For_WP_Admin {
 
 	}
 
-	public function hook_viewport_meta() {
-	    echo '<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">';
-	}
-
 	/**
 	 * This function is an AJAX handler that returns the state of the
 	 * Node Configuration Menu on the Admin Front End. The menu is either hidden or visible.
@@ -168,7 +164,7 @@ class LND_For_WP_Admin {
 				/* process macaroon file upload */
 				if( $_FILES['lnd-attach-macaroon']['error'] != UPLOAD_ERR_NO_FILE ){
 
-					$macaroon_file_name = sanitize_text_field( $_FILES["lnd-attach-macaroon"]['name'] );
+					$macaroon_file_name = sanitize_file_name( $_FILES["lnd-attach-macaroon"]['name'] );
 
 					// check upload file size isnt above 400 bytes
 					if( $_FILES['lnd-attach-macaroon']['size'] > 400 ){
@@ -184,7 +180,6 @@ class LND_For_WP_Admin {
 
 					$macaroon_data = file_get_contents( $_FILES["lnd-attach-macaroon"]["tmp_name"] );
 					$macaroon_hex = strtoupper( bin2hex( $macaroon_data ) );
-					$macaroon_file_name = sanitize_text_field( $_FILES["lnd-attach-macaroon"]['name'] );
 					update_option( 'lnd-macaroon-name', $macaroon_file_name );
 					update_option( 'lnd-macaroon', $macaroon_hex );
 				}
@@ -192,7 +187,7 @@ class LND_For_WP_Admin {
 				/* process tls certificate file upload */
 				if( $_FILES['lnd-attach-tls-cert']['error'] != UPLOAD_ERR_NO_FILE ){
 
-					$tls_file_name = sanitize_text_field( $_FILES["lnd-attach-tls-cert"]['name'] );
+					$tls_file_name = sanitize_file_name( $_FILES["lnd-attach-tls-cert"]['name'] );
 
 					// check upload file size isnt above 1024 bytes
 					if( $_FILES['lnd-attach-tls-cert']['size'] > 1024 ){
@@ -207,7 +202,7 @@ class LND_For_WP_Admin {
 					}
 
 					$tls_cert_path = plugin_dir_path( __FILE__ ) . 'cert/' . $tls_file_name;
-					move_uploaded_file($_FILES["lnd-attach-tls-cert"]["tmp_name"], $tls_cert_path);
+					move_uploaded_file( $_FILES["lnd-attach-tls-cert"]["tmp_name"] , $tls_cert_path );
 					update_option( 'lnd-tls-cert-name', $tls_file_name );
 
 				}
@@ -424,7 +419,7 @@ class LND_For_WP_Admin {
 			}
 
 			if( $fail_sanity_check ){
-				$this->redirect_with_message("channels", __("Invalid Satoshi amount or public key", $this->plugin_name) );
+				$this->redirect_with_message( "channels", __( "Invalid Satoshi amount or public key", $this->plugin_name ) );
 			}else{
 
 				$satoshi_amount = sanitize_text_field( $_REQUEST['lnd-open-channel-sat'] );
