@@ -155,7 +155,7 @@ class LND_For_WP_Admin {
 			update_option( 'lnd-hostname', sanitize_text_field( $_POST['lnd-hostname'] ) );
 			update_option( 'lnd-conn-timeout', sanitize_text_field( $_POST['lnd-conn-timeout'] ) );
 
-			if(isset($_POST['lnd-force-ssl']) && $_POST['lnd-force-ssl'] == "on"){
+			if(isset( $_POST['lnd-force-ssl'] ) && $_POST['lnd-force-ssl'] == "on"){
 				update_option( 'lnd-force-ssl', true );
 			}else{
 				update_option( 'lnd-force-ssl', false );
@@ -327,7 +327,8 @@ class LND_For_WP_Admin {
 	 */
 	public function redirect_with_message($page, $message, $core_message = false) {
 
-		$plugin_page = sanitize_text_field( $_REQUEST['page'] );
+		$message = esc_html( $message );
+		$plugin_page = esc_html( $_REQUEST['page'] );
 		$field_name = $core_message ? 'core_message' : 'message';
 
 		$html = "<form method=\"post\" action=\"admin.php?page=$plugin_page&f=$page\" id=\"ln-redirect\">";
