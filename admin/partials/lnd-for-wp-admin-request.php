@@ -22,7 +22,7 @@ $payment_request = $this->handle_payment_request_form_submit();
 <div class="lnd-wp-status">
 
 	<?php if(isset($_REQUEST['message'])){ ?>
-		<div class="lnd-wp-alert"><?php echo sanitize_text_field($_REQUEST['message']); ?></div>
+		<div class="lnd-wp-alert"><?php echo esc_html($_REQUEST['message']); ?></div>
 	<?php } ?>
 
 	<?php if($payment_request){ ?>
@@ -47,15 +47,14 @@ $payment_request = $this->handle_payment_request_form_submit();
 
 	<?php } else { ?>
 
-		<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=request">
-
+		<form method="post" action="?page=<?php echo esc_html($_REQUEST['page']); ?>&f=request">
 			<input type="hidden" name="lnd-request-submit" value="Y" />
+			<input type="hidden" name="lnd-post-nonce" value="<?php echo wp_create_nonce('lnd_request_invoice'); ?>" />
 
 			<p class="lnd-receive-sat">
 				<?php esc_html_e("Invoice Amount (Satoshi)", $this->plugin_name); ?>:
 			</p>
 			<input type="text" name="lnd-request-amount" class="form-control" placeholder="0" />
-
 			<p class="lnd-receive-memo">
 				<?php esc_html_e("Invoice Description (optional)", $this->plugin_name); ?>:
 			</p>

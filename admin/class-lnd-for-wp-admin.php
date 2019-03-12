@@ -58,7 +58,7 @@ class LND_For_WP_Admin {
 
 		$icon = plugins_url( 'img/lightning.png', __FILE__ );
 
-		add_menu_page( "LND For WP", 'LND For WP', 'manage_options', 'lnd-for-wp', array( $this , 'admin_index') ,$icon);
+		add_menu_page( "LND For WP", 'LND For WP', 'manage_options', 'lnd-for-wp', array( $this , 'admin_index') ,$icon );
 
 	}
 
@@ -76,16 +76,15 @@ class LND_For_WP_Admin {
 	 */
 	public function lnd_menu_update_default_ajax(){
 
-		$menu_default = sanitize_text_field($_REQUEST['hide_menu']);
+		$menu_default = sanitize_text_field( $_REQUEST['hide_menu'] );
 
-		if($menu_default == "true"){
+		if( $menu_default == "true" ){
 			update_option( 'lnd-hide-config', true );
 		}else{
 			update_option( 'lnd-hide-config', false );
 		}
 
 		wp_die();
-
 	}
 
 	/**
@@ -95,17 +94,17 @@ class LND_For_WP_Admin {
 	 */
 	public function lnd_decode_qr_ajax(){
 
-		$image_data = sanitize_text_field($_REQUEST['qr_payload']);
-
+		$image_data = sanitize_text_field( $_REQUEST['qr_payload'] );
 		$QRCodeReader = new Libern\QRCodeReader\QRCodeReader();
-		$qrcode_text = $QRCodeReader->decode($image_data);
+		$qrcode_text = $QRCodeReader->decode( $image_data );
 
-		if(substr($qrcode_text, 0, 10) == "lightning:"){ $qrcode_text = substr($qrcode_text, 10); }
+		if( substr( $qrcode_text, 0, 10 ) == "lightning:"){
+			$qrcode_text = substr( $qrcode_text , 10 );
+		}
 
 		echo $qrcode_text;
 
 		wp_die();
-
 	}
 
 	/**
@@ -117,6 +116,29 @@ class LND_For_WP_Admin {
 		require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-display.php';
 	}
 
+	public function handle_funding_address() {
+
+		// load the most recently generated on chain wallet address
+		$on_chain_funding_address = get_option( 'lnd-on-chain-address' );
+		// if no on chain funding address has been previously stored, or if
+		// user has requested the generation of a new address, generate a new
+		// on chain address and store it as a wordpress option
+		if((
+			isset( $_REQUEST['new'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			$_REQUEST['new'] == "Y" &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'], 'lnd_gen_funding_address' )
+			) ||
+			!$on_chain_funding_address
+		){
+			$on_chain_funding_address =	$this->lnd->get_node_chain_address();
+			update_option( 'lnd-on-chain-address', $on_chain_funding_address );
+		}
+
+		return $on_chain_funding_address;
+
+	}
+
 	/**
 	 * This function is called when the 'Update Node Configuration' form is posted
 	 * from the Plugin Admin Panel
@@ -125,10 +147,15 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_settings_form_post() {
 
-		if(isset($_POST['lnd-update-settings']) && $_POST['lnd-update-settings'] == "Y"){
+		if(
+			isset( $_REQUEST['lnd-update-settings'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'], 'lnd_update_node_settings' ) &&
+			$_REQUEST['lnd-update-settings'] == "Y"
+		){
 
-			update_option( 'lnd-hostname', sanitize_text_field($_POST['lnd-hostname']) );
-			update_option( 'lnd-conn-timeout', sanitize_text_field($_POST['lnd-conn-timeout']) );
+			update_option( 'lnd-hostname', sanitize_text_field( $_POST['lnd-hostname'] ) );
+			update_option( 'lnd-conn-timeout', sanitize_text_field( $_POST['lnd-conn-timeout'] ) );
 
 			if(isset($_POST['lnd-force-ssl']) && $_POST['lnd-force-ssl'] == "on"){
 				update_option( 'lnd-force-ssl', true );
@@ -136,70 +163,69 @@ class LND_For_WP_Admin {
 				update_option( 'lnd-force-ssl', false );
 			}
 
-			if(!empty($_FILES)){
+			if(!empty( $_FILES )){
 
 				/* process macaroon file upload */
-				if($_FILES['lnd-attach-macaroon']['error'] != UPLOAD_ERR_NO_FILE){
+				if( $_FILES['lnd-attach-macaroon']['error'] != UPLOAD_ERR_NO_FILE ){
 
-					$macaroon_file_name = sanitize_text_field($_FILES["lnd-attach-macaroon"]['name']);
+					$macaroon_file_name = sanitize_text_field( $_FILES["lnd-attach-macaroon"]['name'] );
 
 					// check upload file size isnt above 400 bytes
-					if($_FILES['lnd-attach-macaroon']['size'] > 400){
-						$this->redirect_with_message("", $macaroon_file_name . __(" file size is too large", $this->plugin_name) . "...", true);
+					if( $_FILES['lnd-attach-macaroon']['size'] > 400 ){
+						$this->redirect_with_message( "", $macaroon_file_name . __( " file size is too large", $this->plugin_name ) . "...", true );
 						return;
 					}
 
 					// check if the upload file is of the correct type
-					if($_FILES['lnd-attach-macaroon']['type'] != 'application/octet-stream'){
-						$this->redirect_with_message("", $macaroon_file_name . __(" is of an invalid file type", $this->plugin_name) . "...", true);
+					if( $_FILES['lnd-attach-macaroon']['type'] != 'application/octet-stream' ){
+						$this->redirect_with_message( "", $macaroon_file_name . __( " is of an invalid file type", $this->plugin_name ) . "...", true );
 						return;
 					}
 
-					$macaroon_data = file_get_contents($_FILES["lnd-attach-macaroon"]["tmp_name"]);
-					$macaroon_hex = strtoupper(bin2hex($macaroon_data));
-					$macaroon_file_name = sanitize_text_field($_FILES["lnd-attach-macaroon"]['name']);
-
+					$macaroon_data = file_get_contents( $_FILES["lnd-attach-macaroon"]["tmp_name"] );
+					$macaroon_hex = strtoupper( bin2hex( $macaroon_data ) );
+					$macaroon_file_name = sanitize_text_field( $_FILES["lnd-attach-macaroon"]['name'] );
 					update_option( 'lnd-macaroon-name', $macaroon_file_name );
 					update_option( 'lnd-macaroon', $macaroon_hex );
-
 				}
 
 				/* process tls certificate file upload */
-				if($_FILES['lnd-attach-tls-cert']['error'] != UPLOAD_ERR_NO_FILE){
+				if( $_FILES['lnd-attach-tls-cert']['error'] != UPLOAD_ERR_NO_FILE ){
 
-					$tls_file_name = sanitize_text_field($_FILES["lnd-attach-tls-cert"]['name']);
+					$tls_file_name = sanitize_text_field( $_FILES["lnd-attach-tls-cert"]['name'] );
 
 					// check upload file size isnt above 1024 bytes
-					if($_FILES['lnd-attach-tls-cert']['size'] > 1024){
-						$this->redirect_with_message("", $tls_file_name . __(" file size is too large", $this->plugin_name) . "...", true);
+					if( $_FILES['lnd-attach-tls-cert']['size'] > 1024 ){
+						$this->redirect_with_message( "", $tls_file_name . __( " file size is too large", $this->plugin_name) . "...", true );
 						return;
 					}
 
 					// check if the upload file is of the correct type
-					if($_FILES['lnd-attach-tls-cert']['type'] != 'application/octet-stream'){
-						$this->redirect_with_message("", $tls_file_name . __(" is of an invalid file type", $this->plugin_name, true) . "...");
+					if( $_FILES['lnd-attach-tls-cert']['type'] != 'application/octet-stream' ){
+						$this->redirect_with_message( "", $tls_file_name . __( " is of an invalid file type", $this->plugin_name, true) . "..." );
 						return;
 					}
 
 					$tls_cert_path = plugin_dir_path( __FILE__ ) . 'cert/' . $tls_file_name;
-
 					move_uploaded_file($_FILES["lnd-attach-tls-cert"]["tmp_name"], $tls_cert_path);
-
 					update_option( 'lnd-tls-cert-name', $tls_file_name );
 
 				}
 			}
 
-			$this->redirect_with_message("", __("Successfully updated node configuration", $this->plugin_name) . "...", true);
+			$this->redirect_with_message( "", __( "Successfully updated node configuration", $this->plugin_name ) . "...", true );
 			return;
 		}
 
-		if(isset($_POST['lnd-mute-ssl-warning']) && $_POST['lnd-mute-ssl-warning'] == "Y") {
+		if(
+			isset( $_POST['lnd-mute-ssl-warning'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'], 'lnd_mute_ssl_warning' ) &&
+			$_REQUEST['lnd-mute-ssl-warning'] == "Y"
+		){
 			update_option( 'lnd-ssl-warn', 'false' );
-
-			$this->redirect_with_message("", __("SSL Warning dismissed", $this->plugin_name) . "...", true);
+			$this->redirect_with_message( "", __( "SSL Warning dismissed", $this->plugin_name) . "...", true );
 		}
-
 	}
 
 	/*
@@ -231,19 +257,23 @@ class LND_For_WP_Admin {
 	 */
 	public function render_console_content(){
 
-		if(isset($_REQUEST['f']) && $_REQUEST['f'] == "unlock" && !$this->lnd->is_node_reachable()){
+		if(
+			isset( $_REQUEST['f'] ) &&
+			$_REQUEST['f'] == "unlock" &&
+			!$this->lnd->is_node_reachable()
+		){
 
 			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-unlock.php';
 
-		}else if($this->lnd->is_node_reachable()){
+		}else if( $this->lnd->is_node_reachable() ){
 
-			if(isset($_REQUEST['f'])){
+			if(isset( $_REQUEST['f'] )){
 				$lnd_wp_page_function = sanitize_text_field( $_REQUEST['f'] );
 			}else{
 				$lnd_wp_page_function = 'wallet';
 			}
 
-			switch($lnd_wp_page_function){
+			switch( $lnd_wp_page_function ){
 				case 'unlock':
 					require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-unlock.php';
 					break;
@@ -309,19 +339,24 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_form_unlock_wallet() {
 
-		if(isset( $_POST['lnd-unlock-wallet'] ) && $_POST['lnd-unlock-wallet'] == "Y"){
+		if(
+			isset( $_POST['lnd-unlock-wallet'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd-unlock-wallet' ) &&
+			$_POST['lnd-unlock-wallet'] == "Y"
+		){
 
-			$wallet_password = base64_encode(sanitize_text_field( $_POST['lnd-wallet-password'] ));
-			$response = $this->lnd->unlock_wallet($wallet_password);
+			$wallet_password = base64_encode( sanitize_text_field( $_POST['lnd-wallet-password'] ));
+			$response = $this->lnd->unlock_wallet( $wallet_password );
 
 			// sleep for 4 seconds to give node a chance to unlock and begin responding to
 			// rpc calls
 			sleep(4);
 
-			if(isset($response->error)){
-				$this->redirect_with_message("unlock", __(ucfirst($response->error), $this->plugin_name) . "...");
+			if(isset( $response->error )){
+				$this->redirect_with_message( "unlock", __( ucfirst( $response->error ), $this->plugin_name ) . "..." );
 			}else{
-				$this->redirect_with_message("unlock", __("Sent wallet unlock request", $this->plugin_name) . "...");
+				$this->redirect_with_message( "unlock", __( "Sent wallet unlock request", $this->plugin_name ) . "..." );
 			}
 
 		}
@@ -336,19 +371,28 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_payment_request_form_submit(){
 
-		if(isset($_REQUEST['lnd-request-submit']) && $_REQUEST['lnd-request-submit'] == "Y"){
+		if(
+			isset( $_REQUEST['lnd-request-submit'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			$_REQUEST['lnd-request-submit'] == "Y" &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'], 'lnd_request_invoice' )
+		){
 
-			if(isset($_REQUEST['lnd-request-amount']) && !empty($_REQUEST['lnd-request-amount']) && is_numeric($_REQUEST['lnd-request-amount']) && $_REQUEST['lnd-request-amount'] > 0){
+			if(
+				isset( $_REQUEST['lnd-request-amount'] ) &&
+				!empty( $_REQUEST['lnd-request-amount'] ) &&
+				is_numeric( $_REQUEST['lnd-request-amount'] ) &&
+				$_REQUEST['lnd-request-amount'] > 0
+			){
 
 				$request_amount = sanitize_text_field( $_REQUEST['lnd-request-amount'] );
 				$request_memo = sanitize_text_field( $_REQUEST['lnd-request-memo'] );
-
-				$payment_request = $this->lnd->get_new_invoice($request_amount, $request_memo, false);
+				$payment_request = $this->lnd->get_new_invoice( $request_amount, $request_memo, false );
 
 				return $payment_request;
 
 			}else{
-				$this->redirect_with_message("request", __("Generation failed. Invalid Satoshi amount", $this->plugin_name) );
+				$this->redirect_with_message( "request", __( "Generation failed. Invalid Satoshi amount" , $this->plugin_name) );
 			}
 
 		}
@@ -364,28 +408,33 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_open_channel_form() {
 
-		if(isset($_REQUEST['lnd-open-channel-confirm']) && $_REQUEST['lnd-open-channel-confirm'] == "Y"){
-			if(!isset($_REQUEST['lnd-open-channel-sat']) || !is_numeric($_REQUEST['lnd-open-channel-sat'])){
+		if(
+			isset( $_REQUEST['lnd-open-channel-confirm'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd-open-channel' ) &&
+			$_REQUEST['lnd-open-channel-confirm'] == "Y"
+		){
+
+			if(!isset( $_REQUEST['lnd-open-channel-sat'] ) || !is_numeric( $_REQUEST['lnd-open-channel-sat'] )){
 				$fail_sanity_check = true;
 			}
 
-			if(!isset($_REQUEST['lnd-open-channel-pubkey']) || empty($_REQUEST['lnd-open-channel-pubkey'])){
+			if(!isset( $_REQUEST['lnd-open-channel-pubkey'] ) || empty( $_REQUEST['lnd-open-channel-pubkey'] )){
 				$fail_sanity_check = true;
 			}
 
-			if($fail_sanity_check){
-					$this->redirect_with_message("channels", __("Invalid Satoshi amount or public key", $this->plugin_name) );
+			if( $fail_sanity_check ){
+				$this->redirect_with_message("channels", __("Invalid Satoshi amount or public key", $this->plugin_name) );
 			}else{
 
-				$satoshi_amount = sanitize_text_field($_REQUEST['lnd-open-channel-sat']);
-				$node_pub_key = sanitize_text_field($_REQUEST['lnd-open-channel-pubkey']);
+				$satoshi_amount = sanitize_text_field( $_REQUEST['lnd-open-channel-sat'] );
+				$node_pub_key = sanitize_text_field( $_REQUEST['lnd-open-channel-pubkey'] );
+				$response = $this->lnd->open_channel( $satoshi_amount, $node_pub_key );
 
-				$response = $this->lnd->open_channel($satoshi_amount, $node_pub_key);
-
-				if(isset($response->error)){
-					$this->redirect_with_message("channels", __(ucfirst($response->error), $this->plugin_name) );
+				if(isset( $response->error )){
+					$this->redirect_with_message( "channels", __( ucfirst( $response->error ), $this->plugin_name ) );
 				}else{
-					$this->redirect_with_message("channels", __("New channel opened") , $this->plugin_name);
+					$this->redirect_with_message( "channels", __( "New channel opened" ) , $this->plugin_name );
 				}
 			}
 		}
@@ -399,18 +448,22 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_close_channel_form() {
 
-		if(isset($_REQUEST['lnd-close-channel']) && $_REQUEST['lnd-close-channel'] == "Y"){
+		if(
+			isset( $_REQUEST['lnd-close-channel'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'], 'lnd-close-channel' ) &&
+			$_REQUEST['lnd-close-channel'] == "Y"
+		){
 
-			if(isset($_REQUEST['lnd-close-channel-confirm']) && $_REQUEST['lnd-close-channel-confirm'] == "Y"){
+			if(isset( $_REQUEST['lnd-close-channel-confirm'] ) && $_REQUEST['lnd-close-channel-confirm'] == "Y"){
 
-				if(isset($_REQUEST['lnd-close-channel-id']) && !empty($_REQUEST['lnd-close-channel-id']) ){
+				if(isset( $_REQUEST['lnd-close-channel-id'] ) && !empty( $_REQUEST['lnd-close-channel-id'] )){
 
-					$channel_id = sanitize_text_field($_REQUEST['lnd-close-channel-id']);
-
-					$this->lnd->close_channel($channel_id);
-					$this->redirect_with_message("channels", __("Requested channel close", $this->plugin_name) );
+					$channel_id = sanitize_text_field( $_REQUEST['lnd-close-channel-id'] );
+					$this->lnd->close_channel( $channel_id );
+					$this->redirect_with_message( "channels", __( "Requested channel close", $this->plugin_name ));
 				}else{
-					$this->redirect_with_message("channels", __("Invalid channel selected", $this->plugin_name) );
+					$this->redirect_with_message( "channels", __( "Invalid channel selected", $this->plugin_name ));
 				}
 
 			}
@@ -431,32 +484,35 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_add_peer_form() {
 
-		if(isset($_REQUEST['lnd-add-peer-confirm']) && $_REQUEST['lnd-add-peer-confirm'] == "Y"){
+		if(
+			isset( $_REQUEST['lnd-add-peer-confirm'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd-add-peer' ) &&
+			$_REQUEST['lnd-add-peer-confirm'] == "Y"
+		){
 
-			$peer_address = sanitize_text_field($_REQUEST['lnd-add-peer-id']);
+			$peer_address = sanitize_text_field( $_REQUEST['lnd-add-peer-id'] );
 
 			if(!empty($peer_address)){
 
-				$peer_details = explode("@",$peer_address);
+				$peer_details = explode( "@", $peer_address );
 
-				if(!is_array($peer_details)){
-					$this->redirect_with_message("peers", __("Invalid peer address syntax", $this->plugin_name) );
+				if(!is_array( $peer_details )){
+					$this->redirect_with_message( "peers", __( "Invalid peer address syntax", $this->plugin_name ) );
 				}else{
 					$peer_pubkey = $peer_details[0];
 					$peer_host = $peer_details[1];
+					$response = $this->lnd->connect_peer( $peer_pubkey, $peer_host );
 
-					$response = $this->lnd->connect_peer($peer_pubkey,$peer_host);
-
-					if(isset($response->error)){
-						$this->redirect_with_message("peers", __(ucfirst($response->error), $this->plugin_name) );
+					if(isset( $response->error )){
+						$this->redirect_with_message( "peers", __(ucfirst( $response->error ), $this->plugin_name) );
 					}else{
-						$this->redirect_with_message("peers", __("Successfully connected to peer", $this->plugin_name) . "..." );
+						$this->redirect_with_message( "peers", __( "Successfully connected to peer", $this->plugin_name) . "..." );
 					}
-
 				}
 
 			}else{
-				$this->redirect_with_message("peers", __("Unable to connect. Invalid node address"), $this->plugin_name);
+				$this->redirect_with_message( "peers", __( "Unable to connect. Invalid node address"), $this->plugin_name );
 			}
 
 		}
@@ -471,27 +527,28 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_disconnect_peer_form() {
 
-		if(isset($_REQUEST['lnd-disconnect-peer']) && $_REQUEST['lnd-disconnect-peer'] == "Y"){
+		if(
+			isset( $_REQUEST['lnd-disconnect-peer'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd-disconnect-peer' ) &&
+			$_REQUEST['lnd-disconnect-peer'] == "Y"
+		){
 
-			if(isset($_REQUEST['lnd-disconnect-peer-confirm']) && $_REQUEST['lnd-disconnect-peer-confirm'] == "Y"){
-				$peer_pubkey = sanitize_text_field($_REQUEST['lnd-disconnect-peer-id']);
+			if(isset( $_REQUEST['lnd-disconnect-peer-confirm'] ) && $_REQUEST['lnd-disconnect-peer-confirm'] == "Y"){
+				$peer_pubkey = sanitize_text_field( $_REQUEST['lnd-disconnect-peer-id'] );
+				$response = $this->lnd->disconnect_peer( $peer_pubkey );
 
-				$response = $this->lnd->disconnect_peer($peer_pubkey);
-
-				if(isset($response->error)){
-					$this->redirect_with_message("peers", __(ucfirst($response->error), $this->plugin_name) );
+				if(isset( $response->error )){
+					$this->redirect_with_message( "peers", __(ucfirst( $response->error ), $this->plugin_name ) );
 				}else{
-					$this->redirect_with_message("peers", __("Successfully disconnected from peer", $this->plugin_name) );
+					$this->redirect_with_message( "peers", __( "Successfully disconnected from peer", $this->plugin_name ) );
 				}
 
 			}else{
 
-				// check the dc request params and return true if all checks out.
-				// return false if problem
+				$peer_pubkey = sanitize_text_field( $_REQUEST['lnd-disconnect-peer-id'] );
 
-				$peer_pubkey = sanitize_text_field($_REQUEST['lnd-disconnect-peer-id']);
-
-				if(!empty($peer_pubkey)){
+				if(!empty( $peer_pubkey )){
 					return true;
 				}
 
@@ -512,32 +569,33 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_pay_lightning_invoice_form(){
 
-		if(isset($_REQUEST['lnd-pay-invoice']) && $_REQUEST['lnd-pay-invoice'] == "Y"){
+		if(
+			isset($_REQUEST['lnd-pay-invoice']) &&
+			isset($_REQUEST['lnd-post-nonce']) &&
+			wp_verify_nonce($_REQUEST['lnd-post-nonce'], 'lnd_confirm_pay_invoice') &&
+			$_REQUEST['lnd-pay-invoice'] == "Y"
+		){
 
-			$invoice = sanitize_text_field($_REQUEST['lightning-invoice']);
+			$invoice = sanitize_text_field( $_REQUEST['lightning-invoice'] );
 
-			if(empty($invoice)){
-
-				$this->redirect_with_message("payments", __("Payment failed. Invalid invoice supplied", $this->plugin_name));
-
+			if(empty( $invoice )){
+				$this->redirect_with_message( "payments", __( "Payment failed. Invalid invoice supplied", $this->plugin_name ));
 			}else{
 
 				// check if the decoded invoice has been confirmed for payment
-				if(isset($_REQUEST['lnd-pay-confirm']) && $_REQUEST['lnd-pay-confirm'] == "true"){
+				if(isset( $_REQUEST['lnd-pay-confirm'] ) && $_REQUEST['lnd-pay-confirm'] == "true" ){
 
-					$response =	$this->lnd->pay_invoice($invoice);
+					$response =	$this->lnd->pay_invoice( $invoice );
 
-					if(isset($response->payment_error) || isset($response->error)){
-						$this->redirect_with_message("payments", __("Payment failed: ", $this->plugin_name) . $response->payment_error);
+					if(isset( $response->payment_error ) || isset( $response->error )){
+						$this->redirect_with_message( "payments", __( "Payment failed: ", $this->plugin_name ) . $response->payment_error );
 					}else{
-						$this->redirect_with_message("payments", __("Payment success", $this->plugin_name));
+						$this->redirect_with_message( "payments", __( "Payment success", $this->plugin_name ));
 					}
 
 				}else{
-
-					$decoded_invoice = $this->lnd->decode_invoice($invoice);
+					$decoded_invoice = $this->lnd->decode_invoice( $invoice );
 					return $decoded_invoice;
-
 				}
 
 			}
@@ -559,50 +617,52 @@ class LND_For_WP_Admin {
 	 */
 	public function handle_search_graph_for_node() {
 
-		if(isset( $_POST['lnd-search-nodes'] ) && $_POST['lnd-search-nodes'] == "Y"){
+		if(
+			isset( $_POST['lnd-search-nodes'] ) &&
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd-search-nodes' ) &&
+			$_POST['lnd-search-nodes'] == "Y"
+		){
 
 			$search_node = strtolower( sanitize_text_field( $_POST['lnd-search-node'] ) );
-
-			if(empty($search_node)){ return 0; }
-
+			if( empty( $search_node ) ){ return 0; }
 			$results = [];
-
 			$lnd_network_graph = $this->lnd->get_network_graph();
 
 			// loop through all network graph nodes
 			// return the node as a search match if its ip, alias or public key
 			// matches the supplied search term
 
-			foreach($lnd_network_graph->nodes as $node){
+			foreach( $lnd_network_graph->nodes as $node ){
 
-				if(isset($node->alias) && strpos(strtolower($node->alias), $search_node) !== false){
-					array_push($results, $node);
+				if(isset( $node->alias ) && strpos( strtolower( $node->alias ), $search_node ) !== false ){
+					array_push( $results, $node );
 				}
 
-				if(isset($node->pub_key) && strpos(strtolower($node->pub_key), $search_node) !== false){
-					array_push($results, $node);
+				if(isset( $node->pub_key) && strpos( strtolower( $node->pub_key ), $search_node ) !== false ){
+					array_push( $results, $node );
 				}
 
-				if(isset($node->addresses)){
+				if(isset( $node->addresses )){
 					$addresses = $node->addresses;
 
-					foreach($addresses as $address){
-						if(strpos($address->addr, $search_node) !== false){
-							array_push($results, $node);
+					foreach( $addresses as $address ){
+						if( strpos( $address->addr, $search_node ) !== false){
+							array_push( $results, $node );
 						}
 					}
 				}
 
 			}
 
-			if(count($results) == 0){ return 0; }else{
+			if( count( $results ) == 0 ){
+				return 0;
+			}else{
 				return $results;
 			}
 
 		}else{
-
 			return false;
-
 		}
 
 	}
@@ -613,11 +673,12 @@ class LND_For_WP_Admin {
 	 * @since    0.1.0
 	 */
 	public function get_channel_capacity_as_percentage($lnd_channel){
+
 		$total_channel_capacity = $lnd_channel->capacity;
 		$local_channel_balance = $lnd_channel->local_balance;
-		$percentage_capacity = ($local_channel_balance / $total_channel_capacity) * 100;
+		$percentage_capacity = ( $local_channel_balance / $total_channel_capacity ) * 100;
 
-		return round($percentage_capacity);
+		return round( $percentage_capacity );
 	}
 
 	/**
@@ -628,16 +689,14 @@ class LND_For_WP_Admin {
 	 */
 	public function sort_transactions_by_timestamp($transactions){
 
-		function compare_tx_timestamp($a,$b){
-			if($a->time_stamp == $b->time_stamp){
+		function compare_tx_timestamp( $a, $b ){
+			if( $a->time_stamp == $b->time_stamp ){
 				return 0;
 			}
-
-			return ($a->time_stamp > $b->time_stamp) ? -1 : 1;
+			return ( $a->time_stamp > $b->time_stamp ) ? -1 : 1;
 		}
 
-		usort($transactions, "compare_tx_timestamp");
-
+		usort( $transactions, "compare_tx_timestamp" );
 		return $transactions;
 	}
 
@@ -648,7 +707,7 @@ class LND_For_WP_Admin {
 	 */
 	public function is_ssl() {
 
-		if (isset($_SERVER['HTTPS'])) {
+		if (isset( $_SERVER['HTTPS'] )) {
 			return true;
 		}else{
 			return false;

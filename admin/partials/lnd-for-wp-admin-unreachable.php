@@ -26,7 +26,7 @@ $this->handle_form_unlock_wallet();
 	<span class="lnd-unreachable"></span>
 
 	<div class="lnd-wp-links">
-		<a href="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=unlock">
+		<a href="?page=<?php echo esc_html($_REQUEST['page']); ?>&f=unlock">
 			<?php esc_html_e("Unlock Wallet", $this->plugin_name); ?>
 		</a>
 	</div>

@@ -23,16 +23,17 @@ $response = $this->handle_pay_lightning_invoice_form();
 <div class="lnd-wp-status">
 
 	<?php if(isset($_REQUEST['message'])){ ?>
-		<div class="lnd-wp-alert"><?php echo sanitize_text_field($_REQUEST['message']); ?></div>
+		<div class="lnd-wp-alert"><?php echo esc_html($_REQUEST['message']); ?></div>
 	<?php } ?>
 
 	<?php if($response){ ?>
 
 		<p>
-			<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=payments">
+			<form method="post" action="?page=<?php echo esc_html($_REQUEST['page']); ?>&f=payments">
 				<input type="hidden" name="lnd-pay-invoice" value="Y" />
 				<input type="hidden" name="lnd-pay-confirm" value="true" />
 				<input type="hidden" name="lightning-invoice" value="<?php echo sanitize_text_field($_REQUEST['lightning-invoice']); ?>" />
+				<input type="hidden" name="lnd-post-nonce" value="<?php echo wp_create_nonce('lnd_confirm_pay_invoice'); ?>" />
 
 				<p>
 					<strong>
@@ -58,9 +59,10 @@ $response = $this->handle_pay_lightning_invoice_form();
 <?php }else{ ?>
 
 	<p>
-		<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=payments">
+		<form method="post" action="?page=<?php echo esc_html($_REQUEST['page']); ?>&f=payments">
 			<fieldset>
 				<input type="hidden" name="lnd-pay-invoice" value="Y" />
+				<input type="hidden" name="lnd-post-nonce" value="<?php echo wp_create_nonce('lnd_confirm_pay_invoice'); ?>" />
 				<label for="lightning-invoice">
 					<?php esc_html_e("Pay Lightning Invoice", $this->plugin_name); ?>:
 				</label>

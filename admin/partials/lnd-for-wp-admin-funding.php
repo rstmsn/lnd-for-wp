@@ -11,16 +11,7 @@
  * @package    LND_For_WP
  */
 
-// load the most recently generated on chain wallet address
-$on_chain_funding_address = get_option( 'lnd-on-chain-address' );
-
-// if no on chain funding address has been previously stored, or if
-// user has requested the generation of a new address, generate a new
-// on chain address and store it as a wordpress option
-if(!$on_chain_funding_address || isset($_REQUEST['new'])){
-	$on_chain_funding_address =	$this->lnd->get_node_chain_address();
-	update_option( 'lnd-on-chain-address', $on_chain_funding_address );
-}
+$on_chain_funding_address = $this->handle_funding_address();
 
 ?>
 
@@ -37,7 +28,8 @@ if(!$on_chain_funding_address || isset($_REQUEST['new'])){
 
 	<p class="lnd-p-center"><strong><?php echo $on_chain_funding_address; ?></strong></p>
 
-	<form method="post" action="?page=<?php echo sanitize_text_field($_REQUEST['page']); ?>&f=funding&new=Y">
+	<form method="post" action="?page=<?php echo esc_html($_REQUEST['page']); ?>&f=funding&new=Y">
+		<input type="hidden" name="lnd-post-nonce" value="<?php echo wp_create_nonce('lnd_gen_funding_address'); ?>" />
 		<button type="submit" class="btn btn-secondary">
 			<?php esc_html_e("Generate New Address", $this->plugin_name); ?>
 		</button>
