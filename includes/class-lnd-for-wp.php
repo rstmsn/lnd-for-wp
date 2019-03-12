@@ -263,7 +263,6 @@ class LND_For_WP {
 			$this->lnd->set_connection_timeout($lnd_conn_timeout);
 			$this->lnd->set_host($lnd_hostname);
 			$this->lnd->load_macaroon_from_data($lnd_macaroon);
-			$this->lnd->set_curl_log_file(plugin_dir_path( dirname( __FILE__ ) ) . 'logs/curl.log');
 
 			if($lnd_force_ssl){
 				$this->lnd->load_tls_cert(plugin_dir_path( dirname( __FILE__ ) ) . 'admin/cert/' . $lnd_tls_cert_name);

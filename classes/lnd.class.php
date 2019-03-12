@@ -70,17 +70,6 @@ class lnd {
 	private $force_disable_cache = false;
 
 	/*
-	 * When true, curl's verbose mode is enabled. A detailed request log is
-	 * saved to disk. This is very useful for debugging request issues.
-	 */
-	private $log_curl_requests = true;
-
-	/*
-	 * Path to save curl request logs to
-	 */
-	private $curl_log_file = "/logs/curl.log";
-
-	/*
 	 * Path to Root Certificate
 	 */
 	private $cacert = "/cert/cacert.pem";
@@ -117,13 +106,6 @@ class lnd {
 		if(is_numeric($seconds)){
 			$this->connection_timeout = $seconds;
 		}
-	}
-
-	/*
-	 * Set the file path where curl request log data will be written
-	 */
-	public function set_curl_log_file($file_path){
-		$this->curl_log_file = $file_path;
 	}
 
 	/*
