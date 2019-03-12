@@ -144,54 +144,40 @@ class lnd {
 	public function request($path,$options = '',$delete = false){
 
 		$request_url = $this->lnd_end_point . $path;
+		$request_method = $options ? 'POST' : 'GET';
+		$request_method = $delete ? 'DELETE' : $request_method;
+
 		// include lnd authentication macaroon (hex representation) in our curl request
 		// header and set the request content type to JSON
-		$request_header = array('Grpc-Metadata-macaroon:'. $this->macaroon_hex,
-		 						'Content-Type:application/json');
+		$request_header = array("Grpc-Metadata-macaroon" => $this->macaroon_hex,
+		 						"Content-Type" => "application/json");
 
-		$curl_handle = curl_init();
+		$request_body = $options ? json_encode( $options ) : '';
 
-		if($this->log_curl_requests && is_writeable($this->curl_log_file)){
-			$log_fh = fopen($this->curl_log_file, 'w');
-			curl_setopt($curl_handle, CURLOPT_VERBOSE, 1);
-			curl_setopt($curl_handle, CURLOPT_STDERR, $log_fh);
-		}
+		$request_arguments = array(	"headers" => $request_header,
+									"timeout" => $this->connection_timeout,
+									"method" => $request_method,
+									"sslverify" => $this->use_ssl,
+									"sslcertificates" => $this->tls_certificate_path,
+									"body" => $request_body
+								);
 
-		curl_setopt($curl_handle, CURLOPT_CAPATH, $this->tls_certificate_path);
-		curl_setopt($curl_handle, CURLOPT_CAINFO, $this->cacert);
-		curl_setopt($curl_handle, CURLOPT_URL, $request_url);
-		curl_setopt($curl_handle, CURLOPT_HTTPHEADER, $request_header);
-		curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, $this->use_ssl ? '2' : false);
-		curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, $this->use_ssl);
-		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl_handle, CURLOPT_CONNECTTIMEOUT, $this->connection_timeout);
+		$request = new WP_Http();
+		$request_response = $request->request( $request_url , $request_arguments );
 
-		// if lnd expects additional parameters for a request,
-		// we include these by setting the curl postfields option to a JSON encoded
-		// representation of the supplied $options array
-		if(is_array($options) && count($options)>0) {
-			curl_setopt($curl_handle, CURLOPT_POSTFIELDS, json_encode($options));
-		}
-
-		// if delete parameter is true, set curl handler option to signal a
-		// delete http request
-		if($delete){
-			curl_setopt($curl_handle, CURLOPT_CUSTOMREQUEST, "DELETE");
-		}
-
-		// execute the curl request then decode the JSON response to an
-		// object of standard class
-		$request_response = json_decode(curl_exec($curl_handle));
-
-		curl_close($curl_handle);
-
-		// if the response is empty, throw an exception
-		// otherwise return response data object
-		if(!$request_response){
-			$exception_string = 'Host Unreachable';
-			throw new Exception($exception_string);
+		if( is_wp_error( $request_response ) ){
+			$exception_string = $request_response->get_error_message();
+			throw new Exception( $exception_string );
 		}else{
-			return $request_response;
+			$request_response = json_decode( $request_response['body'] );
+
+			if($request_response == null){
+				$exception_string = "locked";
+				throw new Exception( $exception_string );
+			}else{
+				return $request_response;
+			}
+
 		}
 
 	}
@@ -329,7 +315,7 @@ class lnd {
 		try {
 
 			$invoice_options = array("memo" => $memo, "value" => $amount);
-			$invoice = $this->request('invoices',$invoice_options);
+			$invoice = $this->request('invoices', $invoice_options, false, true);
 
 			$return_invoice = new stdClass();
 			$return_invoice->payment_request = $invoice->payment_request;
@@ -519,7 +505,6 @@ class lnd {
 		try {
 
 			$payment = $this->request('payreq/' . $invoice);
-
 			return $payment;
 
 		} catch(Exception $e){
@@ -527,7 +512,6 @@ class lnd {
 		}
 
 		return $error;
-
 	}
 
 	/**
@@ -670,7 +654,11 @@ class lnd {
 			if(isset($lnd_info->error)){
 				$node_synced = 'Error: ' . $lnd_info->error;
 			}else{
-				$node_synced = $lnd_info->synced_to_chain;
+				if(isset($lnd_info->synced_to_chain)){
+					$node_synced = $lnd_info->synced_to_chain;
+				}else{
+					$node_synced = 'Synchronising...';
+				}
 			}
 
 		} catch(Exception $e){
@@ -985,23 +973,12 @@ class lnd {
 	 */
 	public function draw_qr($data_string) {
 		$qr_image_path = plugin_dir_path( __FILE__ ) . '../admin/img/qr/qr.png';
-
 		$qr = new QRcode();
 		$qr->png($data_string, $qr_image_path, 'L', 5, 2);
-
 		$image_data = base64_encode(file_get_contents($qr_image_path));
-
 		$img = '<img src="data:image/gif;base64,'.$image_data.'" />';
 
 		return $img;
-	}
-
-	public function decode_qr(){
-
-		$qr_decoder = new QrReader('/clickandbuilds/RossThompson/wp-content/plugins/lnd-for-wp/qr.png');
-
-		return $qr_decoder->text();
-
 	}
 
 }
