@@ -68,8 +68,9 @@ $lnd_node_results = $this->handle_search_graph_for_node();
 			<input type="hidden" name="lnd-post-nonce" value="<?php echo wp_create_nonce( 'lnd-search-nodes' ); ?>" />
 			<div class="form-group">
 		    	<label for="lnd-search-node">
-			    	<?php esc_html_e( "Search the Network Graph" , $this->plugin_name ); ?>:
+			    	<strong><?php esc_html_e( "Search the Network Graph" , $this->plugin_name ); ?>:</strong>
 				</label>
+				<p>Please note that this operation ignores your 'Connection Timeout' setting and may take a few moments to complete.</p>
 				<input type="text" class="form-control" name="lnd-search-node" id="lnd-search-node" placeholder="<?php esc_html_e( "Node alias, IP or public key", $this->plugin_name ); ?>...">
 		  	</div>
 

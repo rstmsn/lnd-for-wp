@@ -274,7 +274,7 @@ class LND_For_WP_Admin {
 
 		}else if( $this->lnd->is_node_reachable() ){
 
-			if(isset( $_REQUEST['f'] )){
+			if( isset( $_REQUEST['f'] ) ){
 				$lnd_wp_page_function = sanitize_text_field( $_REQUEST['f'] );
 			}else{
 				$lnd_wp_page_function = 'wallet';
@@ -327,8 +327,8 @@ class LND_For_WP_Admin {
 	 */
 	public function redirect_with_message($page, $message, $core_message = false) {
 
-		$message = esc_html( $message );
-		$plugin_page = esc_html( $_REQUEST['page'] );
+		$message = esc_attr( $message );
+		$plugin_page = esc_attr( $_REQUEST['page'] );
 		$field_name = $core_message ? 'core_message' : 'message';
 
 		$html = "<form method=\"post\" action=\"admin.php?page=$plugin_page&f=$page\" id=\"ln-redirect\">";
@@ -641,26 +641,29 @@ class LND_For_WP_Admin {
 			// return the node as a search match if its ip, alias or public key
 			// matches the supplied search term
 
-			foreach( $lnd_network_graph->nodes as $node ){
+			if( isset( $lnd_network_graph->nodes ) ) {
 
-				if(isset( $node->alias ) && strpos( strtolower( $node->alias ), $search_node ) !== false ){
-					array_push( $results, $node );
-				}
+				foreach( $lnd_network_graph->nodes as $node ){
 
-				if(isset( $node->pub_key) && strpos( strtolower( $node->pub_key ), $search_node ) !== false ){
-					array_push( $results, $node );
-				}
+					if( isset( $node->alias ) && strpos( strtolower( $node->alias ), $search_node ) !== false ){
+						array_push( $results, $node );
+					}
 
-				if(isset( $node->addresses )){
-					$addresses = $node->addresses;
+					if( isset( $node->pub_key) && strpos( strtolower( $node->pub_key ), $search_node ) !== false ){
+						array_push( $results, $node );
+					}
 
-					foreach( $addresses as $address ){
-						if( strpos( $address->addr, $search_node ) !== false){
-							array_push( $results, $node );
+					if( isset( $node->addresses ) ){
+						$addresses = $node->addresses;
+
+						foreach( $addresses as $address ){
+							if( strpos( $address->addr, $search_node ) !== false ){
+								array_push( $results, $node );
+							}
 						}
 					}
-				}
 
+				}
 			}
 
 			if( count( $results ) == 0 ){

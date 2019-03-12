@@ -129,11 +129,12 @@ class lnd {
 	 * construct a new lnd api request using curl and send it to our lnd endpoint.
 	 * decode the JSON response and return an object of stdClass
 	 */
-	public function request( $path, $options = '', $delete = false ){
+	public function request( $path, $options = '', $delete = false, $timeout = '' ){
 
 		$request_url = $this->lnd_end_point . $path;
 		$request_method = $options ? 'POST' : 'GET';
 		$request_method = $delete ? 'DELETE' : $request_method;
+		$request_timeout = $timeout ? $timeout : $this->connection_timeout;
 
 		// include lnd authentication macaroon (hex representation) in our curl request
 		// header and set the request content type to JSON
@@ -143,7 +144,7 @@ class lnd {
 		$request_body = $options ? json_encode( $options ) : '';
 
 		$request_arguments = array(	"headers" => $request_header,
-									"timeout" => $this->connection_timeout,
+									"timeout" => $request_timeout,
 									"method" => $request_method,
 									"sslverify" => $this->use_ssl,
 									"sslcertificates" => $this->tls_certificate_path,
@@ -911,7 +912,7 @@ class lnd {
 	 */
 	public function get_network_graph() {
 		try {
-			$graph = $this->request( 'graph' );
+			$graph = $this->request( 'graph' , '' , false, 60 );
 			return $graph;
 		} catch ( Exception $e ){
 			return $e->getMessage();
