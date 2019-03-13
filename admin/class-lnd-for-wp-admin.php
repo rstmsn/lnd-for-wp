@@ -264,11 +264,11 @@ class LND_For_WP_Admin {
 	 */
 	public function render_console_content(){
 
-		if(
-			isset( $_REQUEST['f'] ) &&
-			$_REQUEST['f'] == "unlock" &&
-			!$this->lnd->is_node_reachable()
-		){
+		if ( !$this->lnd->is_node_online() ){
+
+			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-offline.php';
+
+		}elseif ( $this->lnd->is_node_online() && $this->lnd->is_node_locked()  ){
 
 			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-unlock.php';
 
@@ -364,7 +364,7 @@ class LND_For_WP_Admin {
 			if(isset( $response->error )){
 				$this->redirect_with_message( "unlock", __( ucfirst( $response->error ), $this->plugin_name ) . "..." );
 			}else{
-				$this->redirect_with_message( "unlock", __( "Sent wallet unlock request", $this->plugin_name ) . "..." );
+				$this->redirect_with_message( "", __( "Sent wallet unlock request", $this->plugin_name ) . "..." );
 			}
 
 		}
@@ -469,9 +469,9 @@ class LND_For_WP_Admin {
 
 					$channel_id = sanitize_text_field( $_REQUEST['lnd-close-channel-id'] );
 					$this->lnd->close_channel( $channel_id );
-					$this->redirect_with_message( "channels", __( "Requested channel close", $this->plugin_name ));
+					$this->redirect_with_message( "channels", __( "Requested channel close", $this->plugin_name ) );
 				}else{
-					$this->redirect_with_message( "channels", __( "Invalid channel selected", $this->plugin_name ));
+					$this->redirect_with_message( "channels", __( "Invalid channel selected", $this->plugin_name ) );
 				}
 
 			}

@@ -261,6 +261,52 @@ class lnd {
 	}
 
 	/**
+	 * Check if lnd node is online
+	 *
+	 * returns true or false.
+	 *
+	 * @since    0.1.0
+	 */
+	public function is_node_online() {
+
+		try {
+			$lnd_info = $this->request( 'getinfo' );
+			return true;
+
+		} catch( Exception $e ){
+			if( $e->getMessage() == "locked" ){
+				return true;
+			}
+			return false;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if lnd node is online & locked
+	 *
+	 * returns true or false.
+	 *
+	 * @since    0.1.0
+	 */
+	public function is_node_locked() {
+
+		try {
+			$lnd_info = $this->request( 'getinfo' );
+			return false;
+
+		} catch( Exception $e ){
+			if( $e->getMessage() == "locked" ){
+				return true;
+			}
+			return false;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Query lnd node for its version
 	 *
 	 * @since    0.1.0

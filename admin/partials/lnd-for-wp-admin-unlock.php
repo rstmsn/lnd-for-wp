@@ -22,20 +22,15 @@ $this->handle_form_unlock_wallet();
 
 <div class="lnd-wp-status">
 
-	<?php if( isset( $_REQUEST['message'] ) ){ ?>
-		<div class="lnd-wp-alert">
-			<?php esc_html_e( $_REQUEST['message'] , $this->plugin_name ); ?>
-		</div>
-	<?php } ?>
+	<?php if( $this->lnd->is_node_locked() ){ ?>
 
-	<p>
-		<?php esc_html_e( "Node Status", $this->plugin_name ); ?>:
-		<strong><?php echo $this->lnd->get_node_status(); ?></strong>
-	</p>
+		<?php if( isset( $_REQUEST['message'] ) ){ ?>
+			<div class="lnd-wp-alert">
+				<?php esc_html_e( $_REQUEST['message'] , $this->plugin_name ); ?>
+			</div>
+		<?php } ?>
 
-	<?php if( !$this->lnd->is_node_reachable() ){ ?>
-
-		<p>We're unable to communicate with your LND node right now. It may be offline or your wallet may be locked. To try unlocking, enter your wallet password and Press 'Unlock Wallet'.</p>
+		<p>Your wallet is currently locked. To unlock, enter your wallet password and Press 'Unlock Wallet'.</p>
 
 		<form method="post" action="?page=<?php echo esc_html( $_REQUEST['page'] ); ?>&f=unlock">
 		<input type="hidden" name="lnd-unlock-wallet" value="Y" />
@@ -56,7 +51,8 @@ $this->handle_form_unlock_wallet();
 
 		<p>
 			<strong>
-				<?php esc_html_e( "Wallet is unlocked", $this->plugin_name ); ?>.
+				<?php esc_html_e( "Wallet is unlocked", $this->plugin_name ); ?>. Redirecting...
+				<?php $this->redirect_with_message( "", __( "Wallet is unlocked") ); ?>
 			</strong>
 		</p>
 
