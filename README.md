@@ -18,8 +18,8 @@ LND For WP also adds a number of WordPress 'shortcodes', allowing you to embed L
 
 ### Frequently Asked Questions
 
-#### What is LND?
-LND stands for 'Lightning Network Daemon'. It's a software implementation of the Lightning Network which is an open protocol layer that leverages the power of blockchains and smart contracts to make cheap, fast, private transactions available to anyone around the world. To learn more, visit [Lightning Labs](https://lightning.engineering/technology.html)
+#### 1. What is LND?
+  LND stands for 'Lightning Network Daemon'. It's a software implementation of the Lightning Network which is an open protocol layer that leverages the power of blockchains and smart contracts to make cheap, fast, private transactions available to anyone around the world. To learn more, visit [Lightning Labs - Technology Overview](https://lightning.engineering/technology.html)
 
 ### Contributing
 Contributions in the form of issues, feedback & pull requests are very welcome.<br />
