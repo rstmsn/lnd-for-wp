@@ -268,7 +268,7 @@ class LND_For_WP_Admin {
 
 			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-offline.php';
 
-		}elseif ( $this->lnd->is_node_online() && $this->lnd->is_node_locked()  ){
+		}elseif ( $this->lnd->is_node_online() && !$this->lnd->is_node_reachable() ){
 
 			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-unlock.php';
 
