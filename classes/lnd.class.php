@@ -218,34 +218,6 @@ class lnd {
 
 	}
 
-	/**
-	 * Check if we can connect & successfully query lnd
-	 *
-	 * @since    0.1.0
-	 */
-	public function get_node_status() {
-
-		// if the node is unreachable, block further api calls
-		// to reduce page load times
-		if( !$this->force_disable_cache && isset( $this->is_node_reachable ) && !$this->is_node_reachable ){
-			return 'Host Unreachable';
-		}
-
-		try {
-			$lnd_info = $this->request( 'getinfo' );
-			if( isset( $lnd_info->error ) ){
-				$node_status = 'Error: ' . $lnd_info->error;
-			}else{
-				$node_status = 'Online';
-			}
-
-		} catch( Exception $e ){
-			$node_status = $e->getMessage();
-		}
-
-
-		return $node_status;
-	}
 
 	/**
 	 * Check if lnd node is reachable
