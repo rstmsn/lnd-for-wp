@@ -272,7 +272,7 @@ class LND_For_WP_Admin {
 
 			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-unlock.php';
 
-		}else if( $this->lnd->is_node_online() && !$this->lnd->is_node_locked() ){
+		}else{
 
 			if( isset( $_REQUEST['f'] ) ){
 				$lnd_wp_page_function = sanitize_text_field( $_REQUEST['f'] );
@@ -314,8 +314,6 @@ class LND_For_WP_Admin {
 				default:
 					require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-wallet.php';
 			}
-		}else{
-			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-unreachable.php';
 		}
 	}
 
