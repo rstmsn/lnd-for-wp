@@ -10,7 +10,7 @@ LND For WP also adds a number of WordPress 'shortcodes', allowing you to embed L
 
 ### Installation
 
-LND For WP can be installed directly from WordPress. Simply navigate to the 'Plugins -> Add New' page and search for 'LND For WP'. View LND For WP on the [WordPress.org Plugin Directory](https://wordpress.org/plugins/lnd-for-wp/)
+LND For WP can be installed directly from WordPress. Simply navigate to the 'Plugins -> Add New' page and search for 'LND For WP'. You can also view LND For WP on the [WordPress.org Plugin Directory](https://wordpress.org/plugins/lnd-for-wp/)
 
 To install the plugin manually using source code from this repository:
 
