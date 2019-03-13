@@ -22,7 +22,7 @@ LND For WP also adds a number of WordPress 'shortcodes', allowing you to embed L
   LND stands for 'Lightning Network Daemon'. It's a software implementation of the 'Lightning Network', which is an open protocol layer that leverages the power of blockchains and smart contracts to make cheap, fast, private transactions available to anyone around the world. To learn more, visit [Lightning Labs - Technology Overview](https://lightning.engineering/technology.html).
 
 ### Contributing
-Contributions in the form of issues, feedback & pull requests are very welcome.<br />
+Contributions in the form of issues, feedback & pull requests are welcome.<br />
 
 ### Donate
 You can support the project by dropping a few Satoshis in the tip jar: [3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN](bitcoin:3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN)
