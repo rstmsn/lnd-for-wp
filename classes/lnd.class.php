@@ -4,7 +4,7 @@
  * php-Lnd
  *
  * A PHP class for interacting with the Bitcoin
- * Lightning Network Daemon (LND) REST API using cURL.
+ * Lightning Network Daemon (LND) REST API using WP_Http.
  *
  * @author     RSTMSN
  * @link       http://github.com/rstmsn/php-lnd
@@ -33,7 +33,7 @@ class lnd {
 	private $tls_certificate_path = '';
 
 	/*
-	 * forces curl to use SSL/TLS when communicating with lnd
+	 * forces use of SSL/TLS when communicating with lnd
 	 * (requires that tls_certificate_path is set)
 	 */
 	public $use_ssl = false;
@@ -85,7 +85,7 @@ class lnd {
 
 	/*
 	 * Formats the lnd host details into an endpoint URL
-	 * This will be the URL to which all our curl requests are sent
+	 * This will be the URL to which all our requests are sent
 	 */
 	public function set_host( $lnd_host ){
     	// run a basic regex check to ensure the provided host
@@ -126,7 +126,7 @@ class lnd {
 	}
 
 	/*
-	 * construct a new lnd api request using curl and send it to our lnd endpoint.
+	 * construct a new lnd api request and send it to our lnd endpoint.
 	 * decode the JSON response and return an object of stdClass
 	 */
 	public function request( $path, $options = '', $delete = false, $timeout = '' ){
@@ -136,7 +136,7 @@ class lnd {
 		$request_method = $delete ? 'DELETE' : $request_method;
 		$request_timeout = $timeout ? $timeout : $this->connection_timeout;
 
-		// include lnd authentication macaroon (hex representation) in our curl request
+		// include lnd authentication macaroon (hex representation) in our request
 		// header and set the request content type to JSON
 		$request_header = array( "Grpc-Metadata-macaroon" => $this->macaroon_hex,
 		 						 "Content-Type" => "application/json" );
@@ -185,7 +185,7 @@ class lnd {
 
 	/*
 	 * Check lnd TLS certificate exists on disk and
-	 * store its path for later use (in constructing curl request headers)
+	 * store its path for later use (in constructing request headers)
 	 */
 	public function load_tls_cert( $tls_certificate_path ){
 
