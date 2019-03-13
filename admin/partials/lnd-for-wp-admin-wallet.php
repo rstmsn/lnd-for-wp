@@ -24,9 +24,9 @@ $lnd_hostname = get_option( 'lnd-hostname', 'Undefined' );
 
 <div class="lnd-wp-status">
 
-	<?php if($this->lnd->is_node_reachable()){ ?>
+	<?php if( $this->lnd->is_node_online() && !$this->lnd->is_node_locked() ){ ?>
 
-		<a href="?page=<?php echo esc_html($_REQUEST['page']); ?>&f=funding">
+		<a href="?page=<?php echo esc_html( $_REQUEST['page'] ); ?>&f=funding">
 			<span class="lnd-wallet-funding"></span>
 			<?php esc_html_e("Fund Wallet", $this->plugin_name); ?>
 		</a>

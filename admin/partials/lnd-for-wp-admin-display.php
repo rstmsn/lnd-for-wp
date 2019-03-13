@@ -139,7 +139,7 @@ $settings = $this->load_default_settings();
 
 				<?php $this->render_console_content(); ?>
 
-				<?php if($this->lnd->is_node_reachable()){ ?>
+				<?php if( $this->lnd->is_node_online() && !$this->lnd->is_node_locked() ){ ?>
 
 					<div class="lnd-wp-links">
 						<a href="?page=<?php echo esc_html($_REQUEST['page']); ?>&f=payments">

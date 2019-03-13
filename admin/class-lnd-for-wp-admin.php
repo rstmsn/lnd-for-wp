@@ -268,11 +268,11 @@ class LND_For_WP_Admin {
 
 			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-offline.php';
 
-		}elseif ( $this->lnd->is_node_online() && !$this->lnd->is_node_reachable() ){
+		}elseif ( $this->lnd->is_node_online() && $this->lnd->is_node_locked() ){
 
 			require_once plugin_dir_path( __FILE__ ) . 'partials/lnd-for-wp-admin-unlock.php';
 
-		}else if( $this->lnd->is_node_reachable() ){
+		}else if( $this->lnd->is_node_online() && !$this->lnd->is_node_locked() ){
 
 			if( isset( $_REQUEST['f'] ) ){
 				$lnd_wp_page_function = sanitize_text_field( $_REQUEST['f'] );
@@ -357,9 +357,12 @@ class LND_For_WP_Admin {
 			$wallet_password = base64_encode( sanitize_text_field( $_POST['lnd-wallet-password'] ));
 			$response = $this->lnd->unlock_wallet( $wallet_password );
 
-			// sleep for 4 seconds to give node a chance to unlock and begin responding to
-			// rpc calls
-			sleep(4);
+			$lock_check_count = 0;
+
+			while( $this->lnd->is_node_locked(true) && $lock_check_count < 5){
+				sleep(2);
+				$lock_check_count++;
+			}
 
 			if(isset( $response->error )){
 				$this->redirect_with_message( "unlock", __( ucfirst( $response->error ), $this->plugin_name ) . "..." );

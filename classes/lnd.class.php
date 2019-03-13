@@ -60,6 +60,24 @@ class lnd {
 	private $is_node_reachable;
 
 	/*
+	 * a simple state cache for wether or not the node is online. When caching is
+	 * turned on this variable is accessed instead of making additional api calls
+	 */
+	private $is_node_online;
+
+	/*
+	 * a simple state cache for wether or not the node is locked. When caching is
+	 * turned on this variable is accessed instead of making additional api calls
+	 */
+	private $is_node_locked;
+
+	/*
+	 * a simple state cache for the node alias. When caching is
+	 * turned on this variable is accessed instead of making additional api calls
+	 */
+	private $node_alias;
+
+	/*
 	 * If the remote node is unreachable after the initial api request,
 	 * $is_node_reachable is set to false, and some further api calls are blocked, to
 	 * decrease page load time and avoid incurring the connection request timeout period.
@@ -153,6 +171,8 @@ class lnd {
 
 		$request = new WP_Http();
 		$request_response = $request->request( $request_url , $request_arguments );
+
+		#echo "sent request: " . $request_url . var_export(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2),true);
 
 		if( is_wp_error( $request_response ) ){
 			$exception_string = $request_response->get_error_message();
@@ -269,17 +289,30 @@ class lnd {
 	 */
 	public function is_node_online() {
 
+		// if the node is flagged as offline, block further api calls
+		// to reduce page load times
+
+		if( !$this->force_disable_cache &&
+			isset( $this->is_node_online )
+		){
+			return $this->is_node_online;
+		}
+
 		try {
 			$lnd_info = $this->request( 'getinfo' );
+			$this->is_node_online = true;
 			return true;
 
 		} catch( Exception $e ){
 			if( $e->getMessage() == "locked" ){
+				$this->is_node_online = true;
 				return true;
 			}
-			return false;
+
 		}
 
+		$this->is_node_reachable = false;
+		$this->is_node_online = false;
 		return false;
 	}
 
@@ -290,19 +323,29 @@ class lnd {
 	 *
 	 * @since    0.1.0
 	 */
-	public function is_node_locked() {
+	public function is_node_locked( $override_cache = false ) {
+
+		if( !$this->force_disable_cache &&
+			isset( $this->is_node_locked ) &&
+			$override_cache == false
+		){
+			return $this->is_node_locked;
+		}
 
 		try {
 			$lnd_info = $this->request( 'getinfo' );
+			$this->is_node_locked = false;
 			return false;
 
 		} catch( Exception $e ){
 			if( $e->getMessage() == "locked" ){
+			$this->is_node_locked = true;
 				return true;
 			}
-			return false;
+
 		}
 
+		$this->is_node_locked = false;
 		return false;
 	}
 
@@ -589,9 +632,19 @@ class lnd {
 	 */
 	public function get_node_alias() {
 
-		// if the node is flagged as unreachable, block further api calls
-		if( !$this->force_disable_cache && isset( $this->is_node_reachable ) && !$this->is_node_reachable ){
+		// if the node is cache flagged as offline, skip get alias api request
+		if( !$this->force_disable_cache && isset( $this->is_node_online ) && !$this->is_node_online ){
 			return 'Host Unreachable';
+		}
+
+		// if the node is cache flagged as locked, skip get alias api request
+		if( !$this->force_disable_cache && isset( $this->is_node_locked ) && $this->is_node_locked ){
+			return 'Locked';
+		}
+
+		// if the node alias cache var is set, return it instead of making a new request
+		if( !$this->force_disable_cache && isset( $this->node_alias ) ){
+			return $this->node_alias;
 		}
 
 		try {
@@ -599,14 +652,15 @@ class lnd {
 			if( isset( $lnd_info->error ) ){
 				$node_alias = 'Error: ' . $lnd_info->error;
 			}else{
-				$node_alias = $lnd_info->alias;
+				$this->node_alias = $lnd_info->alias;
+				return $this->node_alias;
 			}
 
 		} catch( Exception $e ){
-			$node_alias = $e->getMessage();
+			$error_alias = $e->getMessage();
 		}
 
-		return $node_alias;
+		return $error_alias;
 	}
 
 	/**
