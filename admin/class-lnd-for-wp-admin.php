@@ -471,6 +471,7 @@ class LND_For_WP_Admin {
 					$channel_id = sanitize_text_field( $_REQUEST['lnd-close-channel-id'] );
 					$this->lnd->close_channel( $channel_id );
 					$this->redirect_with_message( "channels", __( "Requested channel close", $this->plugin_name ) );
+
 				}else{
 					$this->redirect_with_message( "channels", __( "Invalid channel selected", $this->plugin_name ) );
 				}

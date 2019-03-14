@@ -453,14 +453,22 @@ class lnd {
 
 		try {
 
-			/*todo*/
+			$channels = $this->request( 'channels' )->channels;
 
-			$channel_options = array( "node_pubkey_string" => $remote_node_pubkey,
-									  "local_funding_amount" => $satoshi_amount);
+			foreach( $channels as $channel ){
+				if( $channel->chan_id == $channel_id ){
+					$channel_info = explode( ":" , $channel->channel_point );
+					$funding_tx_id = $channel_info[0];
+					$index = $channel_info[1];
 
-			$new_channel = $this->request( 'channels', $channel_options );
+					if( isset( $funding_tx_id ) && isset( $index ) ){
+						$this->request( 'channels/' . $funding_tx_id . '/' . $index, '', true  );
+						return true;
+					}
+				}
+			}
 
-			return $new_channel;
+			return false;
 
 		} catch( Exception $e ){
 			$error = $e->getMessage();
