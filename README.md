@@ -1,4 +1,4 @@
-# LND-For-WP  -  alpha 0.1.0
+# LND-For-WP  - 0.1.0
 ## A WordPress plugin for managing &amp; using your LND node.
 
 ### Description 
@@ -9,6 +9,10 @@ LND For WP also adds a number of WordPress 'shortcodes', allowing you to embed L
 ![Plugin Preview](/lnd-for-wp-preview.png?raw=true "LND For WP Preview")
 
 ### Installation
+
+LND For WP can be installed directly from WordPress. Simply navigate to the 'Plugins -> Add New' page and search for 'LND For WP'. You can also view LND For WP on the [WordPress.org Plugin Directory](https://wordpress.org/plugins/lnd-for-wp/)
+
+To install the plugin manually using source code from this repository:
 
 1. Download the latest plugin release from this repository.
 2. Browse to the 'Plugins -> Add New' page within WordPress.
