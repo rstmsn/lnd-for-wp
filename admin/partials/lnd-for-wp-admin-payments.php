@@ -46,7 +46,7 @@ $response = $this->handle_pay_lightning_invoice_form();
 				<p class="lnd-p-center"><?php echo $response->destination; ?></p>
 				<p class="lnd-p-center">
 					<cite>
-						<?php echo $response->description; ?>
+						<?php if( isset( $response->description ) ){ echo $response->description; } ?>
 					</cite>
 				</p>
 

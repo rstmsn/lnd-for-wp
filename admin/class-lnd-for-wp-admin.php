@@ -604,8 +604,15 @@ class LND_For_WP_Admin {
 					}
 
 				}else{
+
 					$decoded_invoice = $this->lnd->decode_invoice( $invoice );
-					return $decoded_invoice;
+
+					if( isset( $decoded_invoice->destination ) ){
+						return $decoded_invoice;
+					}else{
+						$this->redirect_with_message( "payments", __( "Payment failed. Invalid invoice supplied", $this->plugin_name ));
+					}
+
 				}
 
 			}
