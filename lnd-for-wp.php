@@ -9,14 +9,13 @@
  * that starts the plugin.
  *
  * @link              http://github.com/rstmsn/lnd-for-wp/
- * @since             0.1.0
  * @package           lnd-for-wp
  *
  * @wordpress-plugin
  * Plugin Name:       LND For WP
  * Plugin URI:        http://github.com/rstmsn/lnd-for-wp/
  * Description:       Manage and use your LND node.
- * Version:           0.1.0
+ * Version:           0.1.1
  * Author:            RSTMSN
  * Author URI:        http://github.com/rstmsn/
  * License:           GPL-2.0+
@@ -34,7 +33,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Current plugin version.
  * Start at version 0.1.0 and use SemVer - https://semver.org
  */
-define( 'LND_FOR_WP_VERSION', '0.1.0' );
+define( 'LND_FOR_WP_VERSION', '0.1.1' );
 
 /**
  * The code that runs during plugin activation.

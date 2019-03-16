@@ -63,8 +63,8 @@ class LND_For_WP {
 	 * @since    0.1.0
 	 */
 	public function __construct() {
-		if ( defined( 'PLUGIN_NAME_VERSION' ) ) {
-			$this->version = PLUGIN_NAME_VERSION;
+		if ( defined( 'LND_FOR_WP_VERSION' ) ) {
+			$this->version = LND_FOR_WP_VERSION;
 		} else {
 			$this->version = '0.1.0';
 		}
