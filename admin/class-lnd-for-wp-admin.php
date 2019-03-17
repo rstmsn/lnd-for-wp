@@ -406,9 +406,9 @@ class LND_For_WP_Admin {
 
 				if( !isset( $payment_request->amount ) ){
 					$this->redirect_with_message( "request", __( "Unable to generate payment request." , $this->plugin_name) );
+				}else{
+					return $payment_request;
 				}
-
-				return $payment_request;
 
 			}else{
 				$this->redirect_with_message( "request", __( "Generation failed. Invalid Satoshi amount" , $this->plugin_name) );
@@ -513,18 +513,18 @@ class LND_For_WP_Admin {
 
 			$peer_address = sanitize_text_field( $_REQUEST['lnd-add-peer-id'] );
 
-			if(!empty($peer_address)){
+			if( !empty( $peer_address ) ){
 
 				$peer_details = explode( "@", $peer_address );
 
-				if(!is_array( $peer_details )){
+				if( !is_array( $peer_details ) ){
 					$this->redirect_with_message( "peers", __( "Invalid peer address syntax", $this->plugin_name ) );
 				}else{
 					$peer_pubkey = $peer_details[0];
 					$peer_host = $peer_details[1];
 					$response = $this->lnd->connect_peer( $peer_pubkey, $peer_host );
 
-					if(isset( $response->error )){
+					if( isset( $response->error ) ){
 						$this->redirect_with_message( "peers", __(ucfirst( $response->error ), $this->plugin_name) );
 					}else{
 						$this->redirect_with_message( "peers", __( "Successfully connected to peer", $this->plugin_name) . "..." );
@@ -559,16 +559,16 @@ class LND_For_WP_Admin {
 				$response = $this->lnd->disconnect_peer( $peer_pubkey );
 
 				if(isset( $response->error )){
-					$this->redirect_with_message( "peers", __(ucfirst( $response->error ), $this->plugin_name ) );
+					$this->redirect_with_message( "peers", __( ucfirst( $response->error ), $this->plugin_name ) );
 				}else{
-					$this->redirect_with_message( "peers", __( "Successfully disconnected from peer", $this->plugin_name ) );
+					$this->redirect_with_message( "peers", __( "Requested disconnect from peer", $this->plugin_name ) );
 				}
 
 			}else{
 
 				$peer_pubkey = sanitize_text_field( $_REQUEST['lnd-disconnect-peer-id'] );
 
-				if(!empty( $peer_pubkey )){
+				if( !empty( $peer_pubkey ) ){
 					return true;
 				}
 
