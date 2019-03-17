@@ -15,10 +15,11 @@ LND For WP can be installed directly from WordPress. Simply navigate to the 'Plu
 To install the plugin manually using source code from this repository:
 
 1. Download the latest plugin release from this repository.
-2. Browse to the 'Plugins -> Add New' page within WordPress.
-3. Click the 'Upload Plugin' button, select 'Browse' and choose the release .zip you downloaded in step 1.
+2. Browse to the 'Plugins -> Add New' page of your WordPress admin panel.
+3. Click the 'Upload Plugin' button, select 'Browse' and choose the release .zip that you downloaded in step 1.
 4. Press 'Install Now'.
 5. On the next screen, press the 'Activate' button to turn on the plugin.
+6. You're done. You should now see the 'LND For WP' link on your WP admin navigation menu.
 
 ### Frequently Asked Questions
 
