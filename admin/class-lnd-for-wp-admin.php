@@ -398,6 +398,10 @@ class LND_For_WP_Admin {
 				$request_memo = sanitize_text_field( $_REQUEST['lnd-request-memo'] );
 				$payment_request = $this->lnd->get_new_invoice( $request_amount, $request_memo, false );
 
+				if( !isset( $payment_request->amount ) ){
+					$this->redirect_with_message( "request", __( "Unable to generate payment request." , $this->plugin_name) );
+				}
+
 				return $payment_request;
 
 			}else{
