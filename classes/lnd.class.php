@@ -908,7 +908,7 @@ class lnd {
 	public function get_node_chain_address() {
 
 		try {
-			$address = $this->request( 'newaddress?type=1' )->address;
+			$address = $this->request( 'newaddress?type=1' );
 			return $address;
 		} catch ( Exception $e ){
 			return $e->getMessage();
