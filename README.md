@@ -39,4 +39,4 @@ or `$APPDATA/Local/Lnd` on Windows.
 Contributions in the form of issues, feedback & pull requests are welcome.<br />
 
 ### Donate
-You can support the project by dropping a few Satoshis in the tip jar: [3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN](bitcoin:3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN)
+You can support the project by dropping a few Satoshis in the tip jar: `3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN`
