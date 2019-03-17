@@ -133,7 +133,7 @@ class LND_For_WP_Admin {
 				$on_chain_funding_address = $on_chain_funding_address->address;
 				update_option( 'lnd-on-chain-address', $on_chain_funding_address );
 			}else{
-				$this->redirect_with_message( "", __( "Unable to generate new on chain address", $this->plugin_name ) . "..." );
+				$this->redirect_with_message( "funding" , __( "Unable to generate new on chain address", $this->plugin_name ) . "..." );
 			}
 		}
 
