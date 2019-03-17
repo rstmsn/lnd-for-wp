@@ -1,4 +1,4 @@
-# LND-For-WP  - v0.1.1
+# LND-For-WP  - v0.1.2
 ## A WordPress plugin for managing &amp; using your LND node.
 
 ### Description 
