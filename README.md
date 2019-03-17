@@ -24,6 +24,16 @@ To install the plugin manually using source code from this repository:
 
 #### 1. What is LND?
   LND stands for 'Lightning Network Daemon'. It's a software implementation of the 'Lightning Network', which is an open protocol layer that leverages the power of blockchains and smart contracts to make cheap, fast, private transactions available to anyone around the world. To learn more, visit [Lightning Labs - Technology Overview](https://lightning.engineering/technology.html).
+  
+#### 2. Where can I download the latest version of LND?
+   https://github.com/lightningnetwork/lnd/releases
+
+#### 3. LND is up and running. Where are my macaroons?
+  Your macaroon files are generated automatically by LND when it is started. Assuming you're running Bitcoin on mainnet, you would find them inside the data/chain/bitcoin/mainnet directory of your LND die. By default, the LND dir is located at:
+~/.lnd on Linux 
+/Users/[username]/Library/Application Support/Lnd/ on Mac OSX
+or $APPDATA/Local/Lnd on Windows.
+
 
 ### Contributing
 Contributions in the form of issues, feedback & pull requests are welcome.<br />
