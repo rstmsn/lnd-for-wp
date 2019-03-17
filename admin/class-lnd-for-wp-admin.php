@@ -601,10 +601,17 @@ class LND_For_WP_Admin {
 
 					$response =	$this->lnd->pay_invoice( $invoice );
 
-					if(isset( $response->payment_error ) || isset( $response->error )){
-						$this->redirect_with_message( "payments", __( "Payment failed: ", $this->plugin_name ) . $response->payment_error );
-					}else{
+					if( isset( $response->payment_preimage ) && !isset( $response->error ) ){
 						$this->redirect_with_message( "payments", __( "Payment success", $this->plugin_name ));
+					}else{
+
+						$failure_alert = "Unable to process payment. ";
+
+						if( isset( $response->payment_error ) ){
+							$failure_alert .= $response->payment_error;
+						}
+
+						$this->redirect_with_message( "payments", __( $failure_alert , $this->plugin_name ) );
 					}
 
 				}else{
