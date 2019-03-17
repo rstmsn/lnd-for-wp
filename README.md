@@ -30,9 +30,9 @@ To install the plugin manually using source code from this repository:
 
 #### 3. LND is up and running. Where are my macaroons?
   Your macaroon files are generated automatically by LND when it is started. Assuming you're running Bitcoin on mainnet, you would find them inside the data/chain/bitcoin/mainnet directory of your LND dir. By default, the LND dir is located at:
-~/.lnd on Linux 
-/Users/[username]/Library/Application Support/Lnd/ on Mac OSX
-or $APPDATA/Local/Lnd on Windows.
+`~/.lnd` on Linux 
+`/Users/[username]/Library/Application Support/Lnd/` on Mac OSX
+or `$APPDATA/Local/Lnd` on Windows.
 
 
 ### Contributing
