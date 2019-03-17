@@ -22,7 +22,12 @@ $on_chain_funding_address = $this->handle_funding_address();
 </h2>
 
 <div class="lnd-wp-status">
+
 	<p class="lnd-p-center"><?php esc_html_e("On Chain Funding Address:", $this->plugin_name); ?></p>
+
+	<?php if(isset( $_REQUEST['message'] )){ ?>
+		<div class="lnd-wp-alert"><?php echo esc_html( $_REQUEST['message'] ); ?></div>
+	<?php } ?>
 
 	<?php echo $this->lnd->draw_qr($on_chain_funding_address); ?>
 
