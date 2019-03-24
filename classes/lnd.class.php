@@ -757,7 +757,7 @@ class lnd {
 			if( isset( $lnd_info->error ) ){
 				$node_peers = 'Error: ' . $lnd_info->error;
 			}else{
-				if( !$lnd_info->num_peers ){
+				if( !isset($lnd_info->num_peers) ){
 					return 0;
 				}
 				$node_peers = $lnd_info->num_peers;
@@ -782,7 +782,7 @@ class lnd {
 			if( isset( $lnd_info->error ) ){
 				$node_chans = 'Error: ' . $lnd_info->error;
 			}else{
-				if( !$lnd_info->num_active_channels ){
+				if( !isset( $lnd_info->num_active_channels ) ){
 					return 0;
 				}
 				$node_chans = $lnd_info->num_active_channels;
