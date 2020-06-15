@@ -85,7 +85,7 @@ class LND_For_WP {
 	 *
 	 * @since    0.1.0
 	 */
-	public function lnd_wp_shortcode( $attributes ){
+	public function lnd_wp_shortcode( $attributes = [], $content = null, $tag = '' ){
 
 		if( is_array( $attributes ) ){
 
@@ -100,11 +100,27 @@ class LND_For_WP {
 					return $this->lnd_wp_request_invoice( $attributes );
 					break;
 
+				case 'paywall':
+					return $this->lnd_wp_paywall( $attributes, $content );
+					break;
+
 				case 'current_version':
 					return $this->lnd->get_node_version();
 					break;
 			}
 
+		}
+
+	}
+
+	public function lnd_wp_paywall( $attributes, $content ){
+
+		if( is_array( $attributes ) ){
+			ob_start();
+			include(plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/lnd-for-wp-paywall.php');
+			$ajax_html = ob_get_clean();
+
+			return $ajax_html;
 		}
 
 	}
@@ -329,6 +345,8 @@ class LND_For_WP {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'wp_ajax_request_lightning_invoice_ajax', $plugin_public, 'request_lightning_invoice_ajax' );
 		$this->loader->add_action( 'wp_ajax_is_lightning_invoice_paid_ajax', $plugin_public, 'is_lightning_invoice_paid_ajax' );
+		$this->loader->add_action( 'wp_ajax_nopriv_request_lightning_invoice_ajax', $plugin_public, 'request_lightning_invoice_ajax' );
+		$this->loader->add_action( 'wp_ajax_nopriv_is_lightning_invoice_paid_ajax', $plugin_public, 'is_lightning_invoice_paid_ajax' );
 	}
 
 	/**

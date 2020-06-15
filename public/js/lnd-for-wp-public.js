@@ -52,7 +52,7 @@ $( window ).load(function() {
 
 function poll_invoice_funded(funded_field,invoice_field,r_hash){
 
-	//console.log('polling invoice...');
+	console.log('polling invoice...');
 
 	var paid = false;
 	var payment_hash = r_hash;
@@ -63,13 +63,13 @@ function poll_invoice_funded(funded_field,invoice_field,r_hash){
     };
 
     $.post(ajax_object.ajax_url, data, function(response) {
-		//console.log('response: ' + response);
-		if(response == "true"){
-			$(funded_field).slideDown();
-			$(invoice_field).slideUp();
-		}else{
-			setTimeout(poll_invoice_funded,5000, funded_field, invoice_field);
-		}
+			console.log('response: ' + response);
+			if(response == "true"){
+				$(funded_field).slideDown();
+				$(invoice_field).slideUp();
+			}else{
+				setTimeout(poll_invoice_funded, 5000, funded_field, invoice_field, r_hash);
+			}
     });
 
 }
