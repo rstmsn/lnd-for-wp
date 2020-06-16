@@ -116,9 +116,18 @@ class LND_For_WP {
 	public function lnd_wp_paywall( $attributes, $content ){
 
 		if( is_array( $attributes ) ){
-			// attach content to storage
-			$contentHash = ContentStorage::getInstance()->generate_content_hash($attributes['amount'], $attributes['memo']);
-			ContentStorage::getInstance()->attach_content($contentHash, $content);
+			// encrypt
+			$password = 'YOUR_PASSWORD_PLEASE_CHANGE';
+			$key = substr(hash('sha256', $password, true), 0, 32);
+			$cipher = 'aes-256-gcm';
+			$iv_len = openssl_cipher_iv_length($cipher);
+			$tag_length = 16;
+			$iv = openssl_random_pseudo_bytes($iv_len);
+			$tag = ""; // will be filled by openssl_encrypt
+
+			$ciphertext = openssl_encrypt($content, $cipher, $key, OPENSSL_RAW_DATA, $iv, $tag, "", $tag_length);
+			$encrypted = base64_encode($iv.$tag.$ciphertext);
+
 			ob_start();
 			include(plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/lnd-for-wp-paywall.php');
 			$ajax_html = ob_get_clean();

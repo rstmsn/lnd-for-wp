@@ -9,6 +9,7 @@ $( window ).load(function() {
 		var invoice_selector = $(invoice_instance).find('.lightning-invoice');
 		var invoice_amount = $(invoice_instance).find('.invoice-amount').val();
 		var invoice_memo = $(invoice_instance).find('.invoice-memo').val();
+		var content = $(invoice_instance).find('.content').val();
 		var amount_field = $(invoice_instance).find('.amount-field');
 		var invoice_field = $(invoice_instance).find('.invoice-field');
 		var funded_field = $(invoice_instance).find('.funded-field');
@@ -41,7 +42,7 @@ $( window ).load(function() {
 				$(amount_field).slideUp();
 				$(invoice_field).slideDown();
 
-				poll_invoice_funded(funded_field,invoice_field,funded_field_content,json_data.r_hash);
+				poll_invoice_funded(funded_field,invoice_field,funded_field_content,json_data.r_hash,content);
 		    }else{
 			    alert('unable to fetch invoice');
 		    }
@@ -51,22 +52,23 @@ $( window ).load(function() {
 
 });
 
-function poll_invoice_funded(funded_field,invoice_field,funded_field_content,r_hash){
+function poll_invoice_funded(funded_field,invoice_field,funded_field_content,r_hash,content){
 
-	console.log('polling invoice...');
+	//console.log('polling invoice...');
 
 	var paid = false;
 	var payment_hash = r_hash;
 
     var data = {
         'action': 'is_lightning_invoice_paid_ajax',
-        'payment_hash': payment_hash
+        'payment_hash': payment_hash,
+				'content': content
     };
 
     $.post(ajax_object.ajax_url, data, function(response) {
-			console.log('response: ' + response);
+			//console.log('response: ' + response);
 			if (response == "false") {
-				setTimeout(poll_invoice_funded, 5000, funded_field, invoice_field, funded_field_content, r_hash);
+				setTimeout(poll_invoice_funded, 5000, funded_field, invoice_field, funded_field_content, r_hash, content);
 			} else {
 				$(funded_field).slideDown();
 				$(invoice_field).slideUp();

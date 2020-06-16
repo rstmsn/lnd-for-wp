@@ -96,14 +96,8 @@ class LND_for_WP_Public {
 		//){
 			$invoice_amount = sanitize_text_field( $_REQUEST['amount'] );
 			$invoice_memo = sanitize_text_field( $_REQUEST['memo'] );
-			// generate content hash
-			$contentHash = ContentStorage::getInstance()->generate_content_hash($invoice_amount, $invoice_memo);
 			// get new invoice
 			$response = $this->lnd->get_new_invoice( $invoice_amount, $invoice_memo, true, true );
-			// save invoice hash
-			$json_data = json_decode( $response );
-			$invoicehash = $json_data->r_hash;
-			ContentStorage::getInstance()->attach_invoice($invoicehash, $contentHash);
 			echo $response;
 			wp_die();
 		//}
@@ -116,9 +110,22 @@ class LND_for_WP_Public {
 		//	wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd_invoice_paid' )
 		//){
 			$payment_hash = sanitize_text_field($_REQUEST['payment_hash']);
+			$encrypted_content = sanitize_text_field( $_REQUEST['content'] );
+
+			$encrypted = base64_decode($encrypted_content);
+			$password = 'YOUR_PASSWORD_PLEASE_CHANGE';
+			$key = substr(hash('sha256', $password, true), 0, 32);
+			$cipher = 'aes-256-gcm';
+			$iv_len = openssl_cipher_iv_length($cipher);
+			$tag_length = 16;
+			$iv = substr($encrypted, 0, $iv_len);
+			$tag = substr($encrypted, $iv_len, $tag_length);
+			$ciphertext = substr($encrypted, $iv_len + $tag_length);
+
+			$content = openssl_decrypt($ciphertext, $cipher, $key, OPENSSL_RAW_DATA, $iv, $tag);
 
 			if( $this->lnd->invoice_is_paid( $payment_hash ) ){
-				echo ContentStorage::getInstance()->get_content_with_invoice($payment_hash);
+				echo $content;
 			}else{
 				echo "false";
 			}

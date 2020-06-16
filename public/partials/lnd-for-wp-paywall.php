@@ -15,6 +15,7 @@
 		</fieldset>
 		<input type="hidden" class="invoice-amount" value="<?php echo $attributes['amount']; ?>" />
 		<input type="hidden" class="invoice-memo" value="<?php echo $attributes['memo']; ?>" />
+		<input type="hidden" class="content" value="<?php echo $encrypted; ?>" />
 		<button class="btn-invoice-request" type="button">Please Pay</button>
 	</form>
 	<div class="funded-field-content"></div>
