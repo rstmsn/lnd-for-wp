@@ -119,7 +119,6 @@ class LND_for_WP_Public {
 
 			if( $this->lnd->invoice_is_paid( $payment_hash ) ){
 				echo ContentStorage::getInstance()->get_content_with_invoice($payment_hash);
-				echo $content;
 			}else{
 				echo "false";
 			}
