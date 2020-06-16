@@ -116,6 +116,9 @@ class LND_For_WP {
 	public function lnd_wp_paywall( $attributes, $content ){
 
 		if( is_array( $attributes ) ){
+			// attach content to storage
+			$contentHash = ContentStorage::getInstance()->generate_content_hash($attributes['amount'], $attributes['memo']);
+			ContentStorage::getInstance()->attach_content($contentHash, $content);
 			ob_start();
 			include(plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/lnd-for-wp-paywall.php');
 			$ajax_html = ob_get_clean();
@@ -241,6 +244,11 @@ class LND_For_WP {
 		 * Require the main LND interface Class
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/lnd.class.php';
+
+		/**
+		 * Require the main ContentStorage Class
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/contentstorage.class.php';
 
 		/**
 		 * Require the QR Generator Class

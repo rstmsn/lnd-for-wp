@@ -14,6 +14,7 @@ $( window ).load(function() {
 		var funded_field = $(invoice_instance).find('.funded-field');
 		var invoice_qr = $(invoice_instance).find('.lnd-wp-invoice-qr');
 		var wallet_link = $(invoice_instance).find('.wallet-link');
+		var funded_field_content = $(invoice_instance).find('.funded-field-content');
 		var request_btn = $(this);
 
 		if(isNaN(invoice_amount)||invoice_amount<1){
@@ -40,7 +41,7 @@ $( window ).load(function() {
 				$(amount_field).slideUp();
 				$(invoice_field).slideDown();
 
-				poll_invoice_funded(funded_field,invoice_field,json_data.r_hash);
+				poll_invoice_funded(funded_field,invoice_field,funded_field_content,json_data.r_hash);
 		    }else{
 			    alert('unable to fetch invoice');
 		    }
@@ -50,7 +51,7 @@ $( window ).load(function() {
 
 });
 
-function poll_invoice_funded(funded_field,invoice_field,r_hash){
+function poll_invoice_funded(funded_field,invoice_field,funded_field_content,r_hash){
 
 	console.log('polling invoice...');
 
@@ -64,11 +65,12 @@ function poll_invoice_funded(funded_field,invoice_field,r_hash){
 
     $.post(ajax_object.ajax_url, data, function(response) {
 			console.log('response: ' + response);
-			if(response == "true"){
+			if (response == "false") {
+				setTimeout(poll_invoice_funded, 5000, funded_field, invoice_field, funded_field_content, r_hash);
+			} else {
 				$(funded_field).slideDown();
 				$(invoice_field).slideUp();
-			}else{
-				setTimeout(poll_invoice_funded, 5000, funded_field, invoice_field, r_hash);
+				$(funded_field_content).html(response);
 			}
     });
 

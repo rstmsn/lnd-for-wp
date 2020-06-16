@@ -1,7 +1,7 @@
 <div class="lnd-for-wp">
 	<form>
 		<fieldset class="amount-field">
-			<label><?php echo $attributes['amount']; ?> Satoshis</label>
+			<span><?php echo $attributes['amount']; ?> Satoshis</span>
 		</fieldset>
 		<fieldset class="invoice-field">
 			<span class="lnd-wp-invoice-qr">
@@ -17,5 +17,5 @@
 		<input type="hidden" class="invoice-memo" value="<?php echo $attributes['memo']; ?>" />
 		<button class="btn-invoice-request" type="button">Please Pay</button>
 	</form>
-	<div class="funded-field"><?php echo $content; ?></div>
+	<div class="funded-field-content"></div>
 </div>

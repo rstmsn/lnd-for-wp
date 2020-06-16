@@ -96,7 +96,15 @@ class LND_for_WP_Public {
 		//){
 			$invoice_amount = sanitize_text_field( $_REQUEST['amount'] );
 			$invoice_memo = sanitize_text_field( $_REQUEST['memo'] );
-			echo $this->lnd->get_new_invoice( $invoice_amount, $invoice_memo, true, true );
+			// generate content hash
+			$contentHash = ContentStorage::getInstance()->generate_content_hash($invoice_amount, $invoice_memo);
+			// get new invoice
+			$response = $this->lnd->get_new_invoice( $invoice_amount, $invoice_memo, true, true );
+			// save invoice hash
+			$json_data = json_decode( $response );
+			$invoicehash = $json_data->r_hash;
+			ContentStorage::getInstance()->attach_invoice($invoicehash, $contentHash);
+			echo $response;
 			wp_die();
 		//}
 	}
@@ -110,7 +118,8 @@ class LND_for_WP_Public {
 			$payment_hash = sanitize_text_field($_REQUEST['payment_hash']);
 
 			if( $this->lnd->invoice_is_paid( $payment_hash ) ){
-				echo "true";
+				echo ContentStorage::getInstance()->get_content_with_invoice($payment_hash);
+				echo $content;
 			}else{
 				echo "false";
 			}
