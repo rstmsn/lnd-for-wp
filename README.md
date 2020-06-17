@@ -47,3 +47,5 @@ Contributions in the form of issues, feedback & pull requests are welcome.<br />
 ### Donate
 
 This project is a fork of the project [rstmsn/lnd-for-wp](https://github.com/rstmsn/lnd-for-wp). You can support the developer of the original project by dropping a few Satoshis in the tip jar: 3PTj3wuauVLjnL4pU2y6qx84ek9hqAL8EN
+
+Of course I am also happy about a small donation for a coffee or a beer. Just follow the link below: https://tippin.me/@bjawebos
