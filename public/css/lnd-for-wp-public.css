@@ -24,7 +24,7 @@
 }
 .lnd-wp-invoice-qr {
 	margin-bottom: 20px;
-	display: block;
+	display: inline-block;
 }
 .wallet-link {
 	padding: 10px;
@@ -34,14 +34,14 @@
 	color: #fff;
 	font-weight: bold;
 	border: none;
-	border-radiusL 6px;
+	border-radius: 6px;
 	-webkit-border-radius: 6px;
 	padding: 8px 40px;
 }
 .lnd-for-wp {
 	background-color: #c7cee7;
 	padding: 15px;
-	border-radiusL 6px;
+	border-radius: 6px;
 	-webkit-border-radius: 6px;
 	text-align: center;
 }
