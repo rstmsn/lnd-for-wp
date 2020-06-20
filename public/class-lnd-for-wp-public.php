@@ -109,12 +109,21 @@ class LND_for_WP_Public {
 		){
 			$payment_hash = sanitize_text_field($_REQUEST['payment_hash']);
 			$encrypted_content = sanitize_text_field( $_REQUEST['content'] );
-			$content = Crypto::decrypt($encrypted_content);
-			if( $this->lnd->invoice_is_paid( $payment_hash ) ){
-				echo $content;
-			}else{
-				echo "false";
+			if ($_REQUEST['content'] == "") {
+				if( $this->lnd->invoice_is_paid( $payment_hash ) ){
+					echo "true";
+				}else{
+					echo "false";
+				}
+			} else {
+				$content = Crypto::decrypt($encrypted_content);
+				if( $this->lnd->invoice_is_paid( $payment_hash ) ){
+					echo $content;
+				}else{
+					echo "false";
+				}
 			}
+
 
 			wp_die();
 		}

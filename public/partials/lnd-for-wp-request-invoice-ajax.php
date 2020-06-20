@@ -15,6 +15,7 @@
 			<label><strong>Invoice funded. Thank-you for your payment</strong></label>
 		</fieldset>
 		<input type="hidden" class="invoice-memo" value="<?php echo $attributes['memo']; ?>" />
+		<input type="hidden" class="lnd-post-nonce" value="<?php echo wp_create_nonce( 'lnd_request_invoice' ); ?>" />
 		<button class="btn-invoice-request" type="button">Request Invoice</button>
 	</form>
 </div>
