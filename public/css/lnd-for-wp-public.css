@@ -59,3 +59,13 @@
 }
 .lnd-for-wp fieldset { border: none; }
 .lnd-for-wp .amount-field { display: inline-block; }
+
+.amount-sat {
+	font-size: larger;
+	font-weight: bold;
+}
+
+.amount-fiat {
+	font-size: larger;
+	font-style: italic;
+}

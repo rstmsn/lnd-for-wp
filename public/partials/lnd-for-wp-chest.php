@@ -1,7 +1,8 @@
 <div class="lnd-for-wp">
 	<form>
 		<fieldset class="amount-field">
-			<span><?php echo $attributes['amount']; ?> Satoshis</span>
+			<p class="amount-sat"><?php echo $attributes['amount']; ?> Satoshis</p>
+			<p class="amount-fiat">This amount of Satoshis currently corresponds to approximately <?php echo $amount_fiat ?> Euro.</p>
 		</fieldset>
 		<fieldset class="invoice-field">
 			<span class="lnd-wp-invoice-qr">

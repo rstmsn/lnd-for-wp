@@ -118,6 +118,8 @@ class LND_For_WP {
 		if( is_array( $attributes ) ){
 			// encrypt
 			$encrypted = Crypto::encrypt($content);
+			// amount in fiat
+			$amount_fiat = number_format(BlockchainStats::satToFiat($attributes['amount']), 6);
 			ob_start();
 			include(plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/lnd-for-wp-chest.php');
 			$ajax_html = ob_get_clean();
@@ -259,6 +261,11 @@ class LND_For_WP {
 		 * Require the crypto class
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/crypto.class.php';
+
+		/**
+		 * Require the BlockchainStats class
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/blockchain-stats.class.php';
 
 		$this->loader = new LND_For_WP_Loader();
 		$this->lnd = new lnd();
