@@ -100,8 +100,8 @@ class LND_For_WP {
 					return $this->lnd_wp_request_invoice( $attributes );
 					break;
 
-				case 'paywall':
-					return $this->lnd_wp_paywall( $attributes, $content );
+				case 'chest':
+					return $this->lnd_wp_chest( $attributes, $content );
 					break;
 
 				case 'current_version':
@@ -113,23 +113,13 @@ class LND_For_WP {
 
 	}
 
-	public function lnd_wp_paywall( $attributes, $content ){
+	public function lnd_wp_chest( $attributes, $content ){
 
 		if( is_array( $attributes ) ){
 			// encrypt
-			$password = 'YOUR_PASSWORD_PLEASE_CHANGE';
-			$key = substr(hash('sha256', $password, true), 0, 32);
-			$cipher = 'aes-256-gcm';
-			$iv_len = openssl_cipher_iv_length($cipher);
-			$tag_length = 16;
-			$iv = openssl_random_pseudo_bytes($iv_len);
-			$tag = ""; // will be filled by openssl_encrypt
-
-			$ciphertext = openssl_encrypt($content, $cipher, $key, OPENSSL_RAW_DATA, $iv, $tag, "", $tag_length);
-			$encrypted = base64_encode($iv.$tag.$ciphertext);
-
+			$encrypted = Crypto::encrypt($content);
 			ob_start();
-			include(plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/lnd-for-wp-paywall.php');
+			include(plugin_dir_path( dirname( __FILE__ ) ) . 'public/partials/lnd-for-wp-chest.php');
 			$ajax_html = ob_get_clean();
 
 			return $ajax_html;
@@ -255,11 +245,6 @@ class LND_For_WP {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/lnd.class.php';
 
 		/**
-		 * Require the main ContentStorage Class
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/contentstorage.class.php';
-
-		/**
 		 * Require the QR Generator Class
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/phpqrcode/qrlib.php';
@@ -269,6 +254,11 @@ class LND_For_WP {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/qrdecoder/lib/QrReader.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/qrdecoder/QRCodeReader.php';
+
+		/**
+		 * Require the crypto class
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'classes/crypto.class.php';
 
 		$this->loader = new LND_For_WP_Loader();
 		$this->lnd = new lnd();

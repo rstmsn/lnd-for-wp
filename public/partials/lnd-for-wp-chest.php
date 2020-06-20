@@ -16,6 +16,7 @@
 		<input type="hidden" class="invoice-amount" value="<?php echo $attributes['amount']; ?>" />
 		<input type="hidden" class="invoice-memo" value="<?php echo $attributes['memo']; ?>" />
 		<input type="hidden" class="content" value="<?php echo $encrypted; ?>" />
+		<input type="hidden" class="lnd-post-nonce" value="<?php echo wp_create_nonce( 'lnd_request_invoice' ); ?>" />
 		<button class="btn-invoice-request" type="button">Please Pay</button>
 	</form>
 	<div class="funded-field-content"></div>

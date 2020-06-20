@@ -21,7 +21,7 @@ To install the plugin manually using source code from this repository:
 
 ### Shortcodes
 
-1. Paywall: [lnd paywall amount=1 memo="product id 1"]Your content[/lnd]
+1. Chest: [lnd chest amount=1 memo="product id 1"]Your content[/lnd]
 2. Donation: [lnd lightning_invoice ajax="true" amount=1 memo="product id 1"]
 3. Onchain address: [lnd on_chain_address generate_new="true"]
 4. Current version: [lnd current_version]

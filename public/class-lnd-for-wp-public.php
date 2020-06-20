@@ -89,41 +89,27 @@ class LND_for_WP_Public {
 	 * This is an ajax function, called through JS on the front end
 	 */
 	public function request_lightning_invoice_ajax() {
-
-		//if(
-		//	isset( $_REQUEST['lnd-post-nonce'] ) &&
-		//	wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd_request_invoice' )
-		//){
+		if(
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd_request_invoice' )
+		){
 			$invoice_amount = sanitize_text_field( $_REQUEST['amount'] );
 			$invoice_memo = sanitize_text_field( $_REQUEST['memo'] );
 			// get new invoice
 			$response = $this->lnd->get_new_invoice( $invoice_amount, $invoice_memo, true, true );
 			echo $response;
 			wp_die();
-		//}
+		}
 	}
 
 	public function is_lightning_invoice_paid_ajax() {
-
-		//if(
-		//	isset( $_REQUEST['lnd-post-nonce'] ) &&
-		//	wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd_invoice_paid' )
-		//){
+		if(
+			isset( $_REQUEST['lnd-post-nonce'] ) &&
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd_request_invoice' )
+		){
 			$payment_hash = sanitize_text_field($_REQUEST['payment_hash']);
 			$encrypted_content = sanitize_text_field( $_REQUEST['content'] );
-
-			$encrypted = base64_decode($encrypted_content);
-			$password = 'YOUR_PASSWORD_PLEASE_CHANGE';
-			$key = substr(hash('sha256', $password, true), 0, 32);
-			$cipher = 'aes-256-gcm';
-			$iv_len = openssl_cipher_iv_length($cipher);
-			$tag_length = 16;
-			$iv = substr($encrypted, 0, $iv_len);
-			$tag = substr($encrypted, $iv_len, $tag_length);
-			$ciphertext = substr($encrypted, $iv_len + $tag_length);
-
-			$content = openssl_decrypt($ciphertext, $cipher, $key, OPENSSL_RAW_DATA, $iv, $tag);
-
+			$content = Crypto::decrypt($encrypted_content);
 			if( $this->lnd->invoice_is_paid( $payment_hash ) ){
 				echo $content;
 			}else{
@@ -131,7 +117,7 @@ class LND_for_WP_Public {
 			}
 
 			wp_die();
-		//}
+		}
 	}
 
 }
