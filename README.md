@@ -12,12 +12,13 @@ LND For WP also adds a number of WordPress 'shortcodes', allowing you to embed L
 
 To install the plugin manually using source code from this repository:
 
-1. Download the latest plugin release from this repository.
-2. Browse to the 'Plugins -> Add New' page of your WordPress admin panel.
-3. Click the 'Upload Plugin' button, select 'Browse' and choose the release .zip that you downloaded in step 1.
-4. Press 'Install Now'.
-5. On the next screen, press the 'Activate' button to turn on the plugin.
-6. You're done. You should now see the 'LND For WP' link on your WP admin navigation menu.
+1. Download the latest source code from this repository.
+2. Open the file classes/crypto.class.php and set a new password in line 13.
+3. Browse to the 'Plugins -> Add New' page of your WordPress admin panel.
+4. Click the 'Upload Plugin' button, select 'Browse' and choose the release .zip that you downloaded in step 1.
+5. Press 'Install Now'.
+6. On the next screen, press the 'Activate' button to turn on the plugin.
+7. You're done. You should now see the 'LND For WP' link on your WP admin navigation menu.
 
 ### Shortcodes
 
