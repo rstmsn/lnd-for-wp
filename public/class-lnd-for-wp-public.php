@@ -79,8 +79,7 @@ class LND_for_WP_Public {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/lnd-for-wp-public.js', array( 'jquery' ), $this->version, false );
 
-	    wp_localize_script( $this->plugin_name, 'ajax_object',
-	    array( 'ajax_url' => admin_url( 'admin-ajax.php' )));
+	  wp_localize_script( $this->plugin_name, 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' )));
 
 	}
 
@@ -90,31 +89,41 @@ class LND_for_WP_Public {
 	 * This is an ajax function, called through JS on the front end
 	 */
 	public function request_lightning_invoice_ajax() {
-
 		if(
 			isset( $_REQUEST['lnd-post-nonce'] ) &&
 			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd_request_invoice' )
 		){
 			$invoice_amount = sanitize_text_field( $_REQUEST['amount'] );
 			$invoice_memo = sanitize_text_field( $_REQUEST['memo'] );
-			echo $this->lnd->get_new_invoice( $invoice_amount, $invoice_memo, true, true );
+			// get new invoice
+			$response = $this->lnd->get_new_invoice( $invoice_amount, $invoice_memo, true, true );
+			echo $response;
 			wp_die();
 		}
 	}
 
 	public function is_lightning_invoice_paid_ajax() {
-
 		if(
 			isset( $_REQUEST['lnd-post-nonce'] ) &&
-			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd_invoice_paid' )
+			wp_verify_nonce( $_REQUEST['lnd-post-nonce'] , 'lnd_request_invoice' )
 		){
 			$payment_hash = sanitize_text_field($_REQUEST['payment_hash']);
-
-			if( $this->lnd->invoice_is_paid( $payment_hash ) ){
-				echo "true";
-			}else{
-				echo "false";
+			$encrypted_content = sanitize_text_field( $_REQUEST['content'] );
+			if ($_REQUEST['content'] == "") {
+				if( $this->lnd->invoice_is_paid( $payment_hash ) ){
+					echo "true";
+				}else{
+					echo "false";
+				}
+			} else {
+				$content = Crypto::decrypt($encrypted_content);
+				if( $this->lnd->invoice_is_paid( $payment_hash ) ){
+					echo $content;
+				}else{
+					echo "false";
+				}
 			}
+
 
 			wp_die();
 		}
